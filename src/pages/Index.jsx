@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import ChatMessage from "@/components/ChatMessage";
 import ChatInput from "@/components/ChatInput";
 import FeatureButton from "@/components/FeatureButton";
+import { Link } from "react-router-dom";
+import logo from "@/assets/z-logo.png";
 import { 
   Search, 
   Lightbulb, 
   Presentation, 
   Code2, 
   Sparkles, 
-  BookOpen,
-  Menu
+  BookOpen
 } from "lucide-react";
 
 const Index = () => {
@@ -39,28 +42,34 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center justify-between px-4">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
-            </Button>
-            <select className="text-sm font-medium bg-transparent border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer">
-              <option>GPT-4.5</option>
-              <option>GPT-4</option>
-              <option>Claude</option>
-            </select>
-          </div>
-          <Button variant="default" size="sm" className="rounded-full">
-            Sign in
-          </Button>
-        </div>
-      </header>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-background">
+        <AppSidebar />
+        
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex h-14 items-center justify-between px-4">
+              <div className="flex items-center gap-3">
+                <SidebarTrigger />
+                <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                  <img src={logo} alt="Z.ai" className="h-8 w-8" />
+                  <span className="font-semibold text-lg">Z.ai</span>
+                </Link>
+                <select className="text-sm font-medium bg-transparent border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer">
+                  <option>GPT-4.5</option>
+                  <option>GPT-4</option>
+                  <option>Claude</option>
+                </select>
+              </div>
+              <Button variant="default" size="sm" className="rounded-full">
+                Sign in
+              </Button>
+            </div>
+          </header>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-hidden flex flex-col">
+          {/* Main Content */}
+          <main className="flex-1 overflow-hidden flex flex-col">
         <div className="flex-1 overflow-y-auto">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-full px-4 py-12">
@@ -148,9 +157,11 @@ const Index = () => {
             {" and "}
             <a href="#" className="hover:underline">Privacy Policy</a>
           </div>
-        </div>
-      </main>
+          </div>
+        </main>
+      </div>
     </div>
+    </SidebarProvider>
   );
 };
 
