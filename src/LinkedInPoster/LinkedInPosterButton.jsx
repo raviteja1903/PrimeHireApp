@@ -1,4 +1,3 @@
- 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import "./LinkedInPosterButton.css";
@@ -13,11 +12,7 @@ export default function LinkedInPosterButton({ jobData }) {
 
     const handleConnectLinkedIn = () => {
         const loginUrl = "https://www.linkedin.com/login";
-        const popup = window.open(
-            loginUrl,
-            "linkedinLogin",
-            "width=600,height=700"
-        );
+        const popup = window.open(loginUrl, "linkedinLogin", "width=600,height=700");
 
         const checkLogin = setInterval(() => {
             try {
@@ -71,25 +66,27 @@ export default function LinkedInPosterButton({ jobData }) {
     };
 
     return (
-        <div className="linkedin-poster-box">
-            <h3 className="linkedin-title">LinkedIn Poster</h3>
-            
-            <Button
-                variant="outline"
-                onClick={handleConnectLinkedIn}
-                className={`linkedin-btn ${isLoggedIn ? "connected" : ""}`}
-            >
-                {isLoggedIn ? "✅ LinkedIn Connected" : "Connect LinkedIn"}
-            </Button>
-            
-            <Button
-                variant="default"
-                onClick={handlePostJD}
-                disabled={!canPost}
-                className="linkedin-post-btn"
-            >
-                🚀 Auto Post JD
-            </Button>
+        <div className="linkedin-auto-container">
+            <h3 className="linkedin-auto-title">🚀 LinkedIn Auto Poster</h3>
+
+            <div className="linkedin-auto-buttons">
+                <Button
+                    variant="outline"
+                    onClick={handleConnectLinkedIn}
+                    className={`linkedin-connect-btn ${isLoggedIn ? "connected" : ""}`}
+                >
+                    {isLoggedIn ? "✅ Connected to LinkedIn" : "Connect LinkedIn"}
+                </Button>
+
+                <Button
+                    variant="default"
+                    onClick={handlePostJD}
+                    disabled={!canPost}
+                    className="linkedin-post-job-btn"
+                >
+                    🚀 Post Job to LinkedIn
+                </Button>
+            </div>
         </div>
     );
 }

@@ -1,91 +1,79 @@
-/* Wrapper centers the poster safely */
-.linkedin-wrapper {
-  position: fixed;
-  inset: 0;                  /* top:0; left:0; right:0; bottom:0 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;             /* Ensure some spacing on small screens */
-  z-index: 9999;
-  overflow: auto;            /* Allows scrolling if screen is small */
+.linkedin-auto-container {
+  background: linear-gradient(135deg, #f3f7fb, #ffffff);
+  border: 1px solid #e1e9f0;
+  border-radius: 16px;
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 480px;
+  margin: 30px auto;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: all 0.3s ease;
 }
 
-/* Poster Box */
-.linkedin-poster-box {
-  width: 300px;               /* Reduced width */
-  max-width: 90vw;            /* Never exceed viewport width */
-  max-height: 90vh;           /* Never exceed viewport height */
-  background: linear-gradient(145deg, #ffffff, #f0f9ff);
-  border-radius: 20px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-  padding: 24px 20px;
+.linkedin-auto-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+}
+
+.linkedin-auto-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #0077b5;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 1px rgba(0, 119, 181, 0.1);
+}
+
+.linkedin-auto-buttons {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  text-align: center;
-  border: 2px solid #dbeafe;
-  overflow-y: auto;           /* Scroll if content exceeds max-height */
+  align-items: center;
 }
 
-/* Title */
-.linkedin-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #0a66c2;
-  margin-bottom: 6px;
-}
-
-/* Buttons */
-.linkedin-btn,
-.linkedin-post-btn {
+.linkedin-connect-btn {
   width: 100%;
-  padding: 12px 18px;
+  max-width: 300px;
+  border-radius: 10px;
+  border: 2px solid #0077b5;
+  background-color: white;
+  color: #0077b5;
   font-weight: 600;
-  border-radius: 28px;
-  cursor: pointer;
+  padding: 10px 20px;
   transition: all 0.3s ease;
-  font-size: 14px;
-  border: none;
 }
 
-/* Outline Button */
-.linkedin-btn {
-  color: #0a66c2;
-  background: #e0f2fe;
-  border: 2px solid #0a66c2;
-}
-
-.linkedin-btn:hover {
-  background: #0a66c2;
-  color: #fff;
-  transform: scale(1.05);
-}
-
-/* Filled Button */
-.linkedin-post-btn {
-  background: linear-gradient(90deg, #3b82f6, #0ea5e9);
+.linkedin-connect-btn:hover {
+  background-color: #0077b5;
   color: white;
-  border: 2px solid #0a66c2;
+  transform: scale(1.03);
 }
 
-.linkedin-post-btn:hover {
-  transform: scale(1.05);
+.linkedin-connect-btn.connected {
+  background-color: #00b56a;
+  border-color: #00b56a;
+  color: white;
+  box-shadow: 0 0 10px rgba(0, 181, 106, 0.4);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .linkedin-poster-box {
-    width: 95vw;
-    padding: 20px;
-  }
+.linkedin-post-job-btn {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 10px;
+  background-color: #0077b5;
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+}
 
-  .linkedin-title {
-    font-size: 1.2rem;
-  }
+.linkedin-post-job-btn:hover {
+  background-color: #005f91;
+  transform: scale(1.03);
+}
 
-  .linkedin-btn,
-  .linkedin-post-btn {
-    padding: 10px 16px;
-    font-size: 13px;
-  }
+.linkedin-post-job-btn:disabled {
+  background-color: #c6d6e2;
+  cursor: not-allowed;
+  transform: none;
 }
