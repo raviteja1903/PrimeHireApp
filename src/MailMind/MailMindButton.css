@@ -1,0 +1,144 @@
+.mailmind-container {
+  background: linear-gradient(to bottom, #ffffff, #f9fafb);
+  border-radius: 20px;
+  padding: 40px;
+  margin: 40px auto;              /* Centers horizontally */
+  width: 40%;                     /* Responsive width */
+  max-width: 900px;               /* Increased width for desktop */
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+ 
+.mailmind-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.mailmind-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+}
+
+.mailmind-input,
+.mailmind-select {
+  margin-bottom: 12px;
+  border: 2px solid #e5e7eb;
+  padding: 10px;
+  font-size: 15px;
+  transition: 0.3s ease;
+}
+
+.mailmind-input:focus,
+.mailmind-select:focus {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+}
+
+.mailmind-btn,
+.mailmind-extract-btn {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: #fff !important;
+  font-weight: 700;
+  border-radius: 50px !important;
+  padding: 10px 20px !important;
+  border: 2px solid #1a1a1a !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+}
+
+.mailmind-btn:hover,
+.mailmind-extract-btn:hover {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  transform: translateY(-2px);
+}
+
+.mailmind-resume-list {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.mailmind-resume-list ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.resume-link {
+  color: #0ea5e9;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.resume-download {
+  margin-left: 10px;
+  background: #e5e7eb;
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #111827;
+  font-size: 13px;
+  transition: background 0.2s ease;
+}
+
+.resume-download:hover {
+  background: #d1d5db;
+}
+
+.mailmind-preview {
+  margin-top: 20px;
+}
+
+.close-preview-btn {
+  background: #ef4444 !important;
+  color: #fff !important;
+  border-radius: 50px !important;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.close-preview-btn:hover {
+  background: #dc2626 !important;
+  transform: scale(1.03);
+}
+
+/* ===================================================
+   🌀 LOADING OVERLAY ANIMATION
+=================================================== */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  z-index: 100;
+}
+
+.loading-spinner {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+.loading-text {
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-size: 16px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

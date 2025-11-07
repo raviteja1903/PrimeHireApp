@@ -1,0 +1,59 @@
+.chat-loading-container {
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+  padding: 1.5rem 1rem;
+  background-color: hsl(var(--muted) / 0.3);
+  border-radius: 0.5rem;
+}
+
+.chat-ai-avatar {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.chat-loading-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.chat-loading-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: hsl(var(--foreground) / 0.6);
+  border-radius: 50%;
+  animation: chat-bounce 1.4s infinite ease-in-out both;
+}
+
+.chat-loading-dot-1 {
+  animation-delay: -0.32s;
+}
+
+.chat-loading-dot-2 {
+  animation-delay: -0.16s;
+}
+
+.chat-loading-dot-3 {
+  animation-delay: 0s;
+}
+
+@keyframes chat-bounce {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

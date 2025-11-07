@@ -1,0 +1,369 @@
+/* ===================================================
+   ProfileTable.css
+   ✨ Premium Elegant Professional Design
+=================================================== */
+
+/* ===== Base Profile Box ===== */
+.profile-box {
+  background: linear-gradient(to bottom, #ffffff, #fafafa);
+  padding: 24px;
+  border-radius: 16px;
+  border: 2px solid #1a1a1a;
+  box-shadow:
+    0 12px 24px -10px rgba(0, 0, 0, 0.1),
+    0 8px 16px -8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  margin-bottom: 24px;
+  position: relative;
+  animation: luxury-entrance 0.6s ease-out backwards;
+  overflow: hidden;
+}
+
+@keyframes luxury-entrance {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Shine Overlay ===== */
+.profile-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  animation: box-shine 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes box-shine {
+  0%, 100% { left: -150%; }
+  50% { left: 150%; }
+}
+
+/* ===== Filters Row ===== */
+.filters-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* ===== Input Row ===== */
+.filter-inputs {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* ===== Input Boxes ===== */
+.input-box {
+  border: 2px solid #1a1a1a;
+  background: linear-gradient(to bottom, #ffffff, #f9fafb);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+.input-box:focus {
+  outline: none;
+  border-color: #38bdf8;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(56, 189, 248, 0.2);
+  transform: translateY(-2px);
+}
+
+.input-box.small {
+  width: 120px;
+}
+
+/* ===== Sort Button ===== */
+.sort-btn {
+  border: 2px solid #1a1a1a;
+  background: linear-gradient(to bottom, #ffffff, #fafafa);
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  color: #1a1a1a;
+  font-size: 14px;
+}
+
+.sort-btn:hover {
+  border-color: #38bdf8;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 16px rgba(56, 189, 248, 0.25),
+    0 4px 8px rgba(14, 165, 233, 0.2);
+}
+
+/* ===== Clear Filter Button ===== */
+.clear-category {
+  background: #fee2e2;
+  border: 2px solid #f87171;
+  color: #991b1b;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.25s ease;
+}
+
+.clear-category:hover {
+  background: #fecaca;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(248, 113, 113, 0.3);
+}
+
+/* ===== Profiles Table ===== */
+.profiles-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  font-size: 14px;
+}
+
+.profiles-table th {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: #ffffff;
+  text-align: left;
+  font-weight: 700;
+  padding: 14px 12px;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.6px;
+}
+
+.profiles-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 14px 12px;
+  background: #ffffff;
+  transition: all 0.25s ease;
+  vertical-align: middle;
+}
+
+/* ===== Hover Row Effect ===== */
+.profiles-table tbody tr:hover {
+  transform: translateX(4px);
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.04), #ffffff);
+  box-shadow:
+    -4px 0 0 0 #38bdf8,
+    0 4px 10px rgba(56, 189, 248, 0.15);
+}
+
+/* ===== Name Cell & Labels ===== */
+.name-cell .name {
+  font-weight: 700;
+  color: #1a1a1a;
+  font-size: 15px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.profiles-table tbody tr:hover .name-cell .name {
+  color: #0ea5e9;
+}
+
+/* ===== Match Labels ===== */
+.match-label {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  margin-top: 6px;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.match-best {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 2px solid #34d399;
+}
+
+.match-good {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  border: 2px solid #fbbf24;
+}
+
+.match-partial {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #991b1b;
+  border: 2px solid #f87171;
+}
+
+/* ===== Match Bar ===== */
+.match-bar {
+  width: 115px;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.bar-fill {
+  height: 100%;
+  transition: width 0.8s ease;
+}
+
+.bar-fill.best {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+.bar-fill.good {
+  background: linear-gradient(90deg, #facc15, #eab308);
+}
+.bar-fill.partial {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+/* ===== Action Buttons ===== */
+.actions-cell {
+  text-align: center;
+}
+
+.action-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* MAIL */
+.action-btn.mail {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+.action-btn.mail:hover {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+/* WHATSAPP */
+.action-btn.whatsapp {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  color: #166534;
+  border-color: #86efac;
+}
+.action-btn.whatsapp:hover {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #ffffff;
+  border-color: #16a34a;
+}
+
+/* DISABLED WhatsApp */
+.action-btn.whatsapp.disabled {
+  background: linear-gradient(to bottom, #f2f2f2, #e5e5e5);
+  color: #888888;
+  border-color: #d1d1d1;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* BOT */
+.action-btn.bot {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  border-color: #fcd34d;
+}
+.action-btn.bot:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  border-color: #d97706;
+}
+
+/* ===== Score Cell ===== */
+.score {
+  font-weight: 700;
+  font-size: 15px;
+  text-align: center;
+  color: #1a1a1a;
+}
+
+/* ===== Summary Cards ===== */
+.summary-box {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 2px solid #e5e7eb;
+}
+
+.review-cards {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.review-card {
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  background: linear-gradient(to bottom, #ffffff, #fafafa);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-width: 140px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.review-card:hover {
+  border-color: #38bdf8;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  transform: translateY(-3px);
+}
+
+.review-card.active {
+  border-color: #0ea5e9;
+  background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+  color: #ffffff;
+  transform: translateY(-3px);
+}

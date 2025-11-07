@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Paperclip } from "lucide-react";
+import "./ChatInput.css";
 
-const ChatInput = ({ onSend, disabled }) => {
+const ChatInput = ({ onSend, disabled, placeholder = "Ask me anything..." }) => {
   const [input, setInput] = useState("");
 
   const handleSend = () => {
@@ -21,31 +22,27 @@ const ChatInput = ({ onSend, disabled }) => {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 pb-6">
-      <div className="relative flex items-end gap-2 p-3 bg-background border border-border rounded-2xl shadow-lg transition-all duration-200 focus-within:shadow-xl focus-within:border-foreground/20">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="flex-shrink-0 h-9 w-9 rounded-full hover:bg-accent"
-        >
-          <Paperclip className="h-5 w-5" />
+    <div className="chat-input-wrapper">
+      <div className="chat-input-container">
+        <Button variant="ghost" size="icon" className="attach-btn">
+          <Paperclip />
         </Button>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Message Z.ai..."
+          placeholder={placeholder}
           disabled={disabled}
-          className="flex-1 min-h-[44px] max-h-[200px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 p-2 text-base placeholder:text-muted-foreground"
+          className="chat-textarea"
           rows={1}
         />
         <Button
           onClick={handleSend}
           disabled={!input.trim() || disabled}
           size="icon"
-          className="flex-shrink-0 h-9 w-9 rounded-full bg-primary hover:bg-primary/90 disabled:opacity-50"
+          className="send-btn"
         >
-          <Send className="h-5 w-5" />
+          <Send />
         </Button>
       </div>
     </div>

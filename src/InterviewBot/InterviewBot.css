@@ -1,0 +1,75 @@
+/* Main container */
+.interviewbot-containerOne {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Title */
+.interviewbot-titleOne {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Validation panel wrapper before interview starts */
+.validation-wrapper {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 450px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Input fields */
+.validation-wrapper input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+/* Buttons */
+.validation-wrapper button {
+  width: 100%;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px;
+}
+
+/* ✅ When WebcamRecorder is shown */
+.interview-live-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Keep same background as main system */
+body {
+  background-color: #f8fafc;
+}
+
+/* Tablet / Mobile */
+@media (max-width: 768px) {
+  .interviewbot-containerOne {
+    padding: 15px;
+  }
+
+  .interviewbot-titleOne {
+    font-size: 22px;
+  }
+
+  .validation-wrapper {
+    padding: 18px;
+  }
+}

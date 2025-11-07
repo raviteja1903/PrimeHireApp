@@ -26,5 +26,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "app/components/FeatureButton.tsx", "app/components/FeatureSelector.tsx", "app/components/InterviewBot.tsx", "PrimeHireBrain.tsx", "app/components/ResumeTable.tsx", "app/components/ResumeUploader.tsx", "app/components/JDCreator.tsx"]
 }
