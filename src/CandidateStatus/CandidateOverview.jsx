@@ -1,13 +1,14 @@
 import React from "react";
 import "./CandidateOverview.css";
 import logo from "../assets/primehire_logo.png";
+import { Link } from "react-router-dom";
 
 const CandidateOverview = () => {
     return (
         <div className="candidate-status-container">
-            <div className="top-header1">
+           <Link to={"/"}> <div className="top-header1">
                 <img src={logo} alt="Logo" className="top-logo2" />
-            </div>
+            </div></Link>
             <h2 className="title">CANDIDATE STATUS</h2>
 
             <div className="status-card">
