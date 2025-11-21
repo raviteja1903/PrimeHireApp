@@ -1,228 +1,353 @@
+// // src/components/ValidationPanel.jsx
+// import React, { useState, useRef, useEffect } from "react";
+// import { Button } from "@/components/ui/button";
+// import { API_BASE } from "@/utils/constants";
+// import { v4 as uuidv4 } from "uuid";
+// import { useNavigate } from "react-router-dom";
+// import "./ValidationPanel.css";
+
+// export default function ValidationPanel() {
+//   const [candidateName, setCandidateName] = useState("");
+//   const [isSaved, setIsSaved] = useState(false);
+//   const [capturedImage, setCapturedImage] = useState(null);
+//   const [candidateId, setCandidateId] = useState(() => uuidv4());
+//   const videoRef = useRef(null);
+//   const canvasRef = useRef(null);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     // nothing auto-started; camera starts after name validated
+//   }, []);
+
+//   const startCamera = async () => {
+//     try {
+//       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+//       if (videoRef.current) {
+//         videoRef.current.srcObject = stream;
+//         await videoRef.current.play();
+//       }
+//     } catch (err) {
+//       console.error("Camera start failed:", err);
+//       alert("Camera access denied or unavailable.");
+//     }
+//   };
+
+//   const captureFace = () => {
+//     const video = videoRef.current;
+//     const canvas = canvasRef.current;
+//     if (!video || !canvas) return alert("Camera not ready");
+//     const ctx = canvas.getContext("2d");
+//     canvas.width = video.videoWidth || 320;
+//     canvas.height = video.videoHeight || 240;
+//     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+//     const dataUrl = canvas.toDataURL("image/png");
+//     setCapturedImage(dataUrl);
+//     setIsSaved(false);
+//     alert("Face captured. Click Save to store in backend.");
+//   };
+
+//   const saveFaceToBackend = async () => {
+//     if (!capturedImage) return alert("Capture first");
+//     if (!candidateName.trim()) return alert("Enter candidate name");
+
+//     // ensure candidateId exists
+//     const sessionId = candidateId || uuidv4();
+//     setCandidateId(sessionId);
+
+//     const blob = await (await fetch(capturedImage)).blob();
+//     const fd = new FormData();
+//     fd.append("candidate_name", candidateName);
+//     fd.append("candidate_id", sessionId);
+//     fd.append("face_image", blob, "face.png");
+
+//     try {
+//       console.log("[ValidationPanel] saving face for", candidateName, sessionId);
+//       const res = await fetch(`${API_BASE}/mcp/tools/candidate_validation/save_face_image`, {
+//         method: "POST",
+//         body: fd,
+//       });
+//       // backend may return plain success or json, handle both
+//       const d = res.headers.get("content-type")?.includes("application/json") ? await res.json() : { ok: res.ok };
+//       console.log("[ValidationPanel] save face response:", d);
+//       if (!res.ok && !(d && d.ok)) throw new Error(d?.message || "Failed to save");
+//       setIsSaved(true);
+//       alert("✅ Face saved.");
+//     } catch (err) {
+//       console.error("Save face error:", err);
+//       alert("Failed to save face image: " + (err.message || err));
+//     }
+//   };
+
+//   const handleValidate = async () => {
+//     if (!candidateName.trim()) return alert("Enter name");
+//     await startCamera();
+//     alert("Name accepted. Capture and save face, then continue.");
+//   };
+
+//   const handleGoInstructions = () => {
+//     if (!isSaved) return alert("Save face before continuing.");
+//     console.log("➡️ Navigating to /instructions with:", { candidateName, candidateId });
+//     navigate("/instructions", {
+//       state: {
+//         candidateName,
+//         candidateId,
+//       },
+//     });
+//   };
+
+//   return (
+//     <div className="validation-container">
+//       <h2>Validate Candidate</h2>
+//       <input
+//         placeholder="Candidate Name"
+//         value={candidateName}
+//         onChange={(e) => setCandidateName(e.target.value)}
+//       />
+//       <div style={{ marginTop: 8 }}>
+//         <Button onClick={handleValidate}>Validate (start camera)</Button>
+//       </div>
+
+//       <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
+//         <div>
+//           <video ref={videoRef} autoPlay muted width="320" height="240" />
+//           <canvas ref={canvasRef} style={{ display: "none" }} />
+//         </div>
+
+//         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+//           <Button onClick={captureFace}>📸 Capture</Button>
+//           <Button onClick={saveFaceToBackend}>💾 Save</Button>
+//           <Button variant="outline" onClick={handleGoInstructions} disabled={!isSaved}>
+//             🎯 Go to Instructions
+//           </Button>
+//           {isSaved ? (
+//             <div style={{ color: "green" }}>✅ Face saved — ready to continue</div>
+//           ) : (
+//             <div style={{ color: "#888" }}>Save face to continue</div>
+//           )}
+//         </div>
+//       </div>
+
+//       <div style={{ marginTop: 12, opacity: 0.8 }}>
+//         <strong>Debug:</strong> name: {candidateName || "—"} | id: {candidateId}
+//       </div>
+//     </div>
+//   );
+// }
+
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { API_BASE } from "@/utils/constants";
-import "./ValidationPanel.css";
 import { v4 as uuidv4 } from "uuid";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import "./ValidationPanel.css";
 
-const ValidationPanel = ({
-  candidateName,
-  setCandidateName,
-  validationResult,
-  setValidationResult,
-}) => {
-  const [panFile, setPanFile] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+export default function ValidationPanel() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const params = new URLSearchParams(location.search);
+
+  const [candidateName, setCandidateName] = useState("");
+  const [candidateId, setCandidateId] = useState(() => uuidv4());
+  const [jdId, setJdId] = useState(null);
+  const [jdText, setJdText] = useState("");
+
+  const [isSaved, setIsSaved] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
-  const [isSaved, setIsSaved] = useState(false); // ✅ Track save state
-  const [candidateId, setCandidateId] = useState(null);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const navigate = useNavigate();
 
-  // 🎥 Start camera only when validation passes
+  // ------------------------------------------------------------
+  // 1️⃣ Read values from email link query params
+  // ------------------------------------------------------------
   useEffect(() => {
-    if (validationResult?.valid_name) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-          if (videoRef.current) videoRef.current.srcObject = stream;
-        })
-        .catch((err) => console.error("Camera access error:", err));
+    const nameFromURL = params.get("candidateName");
+    const idFromURL = params.get("candidateId");
+    const jdFromURL = params.get("jd_id");
+
+    if (nameFromURL) setCandidateName(nameFromURL);
+    if (idFromURL) setCandidateId(idFromURL);
+    if (jdFromURL) setJdId(jdFromURL);
+
+    // If JD id exists → fetch JD text
+    if (jdFromURL) {
+      fetchJDText(jdFromURL);
     }
-  }, [validationResult?.valid_name]);
+  }, []);
 
-  const captureFace = () => {
-    const canvas = canvasRef.current;
-    const video = videoRef.current;
-    if (!canvas || !video) return;
+  // ------------------------------------------------------------
+  // 2️⃣ Fetch JD text from backend automatically
+  // ------------------------------------------------------------
+  const fetchJDText = async (id) => {
+    try {
+      const res = await fetch(
+        `${API_BASE}/mcp/tools/jd_history/jd/history/${id}`
+      );
+      const data = await res.json();
 
-    const context = canvas.getContext("2d");
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const dataURL = canvas.toDataURL("image/png");
-    setCapturedImage(dataURL);
-    setIsSaved(false); // reset save state when recapturing
-    alert("💾 Please save your captured image to proceed.");
+      if (data?.jd_text) {
+        setJdText(data.jd_text);
+      } else {
+        setJdText("Job description unavailable");
+      }
+    } catch (err) {
+      console.error("Failed to fetch JD:", err);
+      setJdText("Job description unavailable");
+    }
   };
 
-  const saveFaceToBackend = async () => {
-    if (!capturedImage || !candidateName) {
-      alert("Please capture your face first.");
-      return;
+  // ------------------------------------------------------------
+  // CAMERA START
+  // ------------------------------------------------------------
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+    } catch (err) {
+      console.error("Camera start failed:", err);
+      alert("Camera access denied or unavailable.");
     }
+  };
 
-    const sessionId = candidateId || uuidv4();
-    setCandidateId(sessionId);
+  // CAPTURE FACE
+  const captureFace = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return alert("Camera not ready");
+
+    const ctx = canvas.getContext("2d");
+    canvas.width = video.videoWidth || 320;
+    canvas.height = video.videoHeight || 240;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const dataUrl = canvas.toDataURL("image/png");
+    setCapturedImage(dataUrl);
+    setIsSaved(false);
+    alert("Face captured. Click Save to store in backend.");
+  };
+
+  // SAVE FACE TO BACKEND
+  const saveFaceToBackend = async () => {
+    if (!capturedImage) return alert("Capture first");
+    if (!candidateName.trim()) return alert("Enter candidate name");
 
     const blob = await (await fetch(capturedImage)).blob();
-    const formData = new FormData();
-    formData.append("candidate_name", candidateName);
-    formData.append("candidate_id", sessionId);
-    formData.append("face_image", blob, "face.png");
+    const fd = new FormData();
+    fd.append("candidate_name", candidateName);
+    fd.append("candidate_id", candidateId);
+    fd.append("face_image", blob, "face.png");
 
     try {
       const res = await fetch(
         `${API_BASE}/mcp/tools/candidate_validation/save_face_image`,
         {
           method: "POST",
-          body: formData,
+          body: fd,
         }
       );
-      if (!res.ok) throw new Error("Failed to save face");
 
-      setIsSaved(true); // ✅ Enable Start Interview after saving
-      alert("✅ Face image saved successfully!");
+      const d = res.headers.get("content-type")?.includes("application/json")
+        ? await res.json()
+        : { ok: res.ok };
+
+      if (!res.ok && !d.ok) throw new Error("Failed to save");
+
+      setIsSaved(true);
+      alert("✅ Face saved.");
     } catch (err) {
-      console.error(err);
-      alert("❌ Failed to save face image. Please try again.");
+      alert("Failed to save face image: " + err.message);
     }
   };
 
-  const handleValidateCandidate = async () => {
-    if (!candidateName || !panFile) {
-      alert("Please enter candidate name and upload PAN card.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("name", candidateName);
-    formData.append("pan_file", panFile);
-
-    try {
-      setIsLoading(true);
-      const response = await fetch(
-        `${API_BASE}/mcp/tools/candidate_validation/validate_candidate`,
-        { method: "POST", body: formData }
-      );
-      if (!response.ok)
-        throw new Error(`Validation failed: ${response.status}`);
-
-      const data = await response.json();
-      console.log("Candidate validation result:", data);
-
-      let parsed = null;
-      if (typeof data.validation === "object") parsed = data.validation;
-      else if (typeof data.validation === "string") {
-        try {
-          parsed = JSON.parse(data.validation);
-        } catch {
-          console.warn("Fallback to direct object:", data.validation);
-        }
-      }
-
-      if (parsed) setValidationResult(parsed);
-      else alert("Failed to parse validation result");
-    } catch (err) {
-      console.error("PAN validation error:", err);
-      alert("Validation failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+  // VALIDATE BUTTON
+  const handleValidate = async () => {
+    if (!candidateName.trim()) return alert("Enter name");
+    await startCamera();
+    alert("Name accepted. Capture and save face, then continue.");
   };
 
-  const handleStartInterview = () => {
-    if (!isSaved) {
-      alert("Please save your face image before continuing.");
-      return;
-    }
+  // NEXT: GO TO INSTRUCTIONS
+  const handleGoInstructions = () => {
+    if (!isSaved) return alert("Save face before continuing.");
 
-    navigate("/webcam-recorder", {
-      state: { candidateName, candidateId },
+    navigate("/instructions", {
+      state: {
+        candidateName,
+        candidateId,
+        jd_id: jdId,
+        jd_text: jdText,
+      },
     });
   };
 
   return (
     <div className="validation-container">
-      {/* Left Panel - PAN Validation */}
-      <div className="validation-panel">
-        <input
-          type="text"
-          placeholder="Candidate Name"
-          className="validation-input"
-          value={candidateName}
-          onChange={(e) => setCandidateName(e.target.value)}
-        />
+      <h2>Validate Candidate</h2>
 
-        <div className="file-upload-section">
-          <input
-            type="file"
-            accept=".jpg,.jpeg,.png,.pdf"
-            onChange={(e) => setPanFile(e.target.files[0])}
-            className="file-input"
-          />
-          <p className="file-upload-help">
-            📎 Please upload a clear image or PDF of the candidate's PAN card.
-          </p>
-        </div>
+      <input
+        placeholder="Candidate Name"
+        value={candidateName}
+        onChange={(e) => setCandidateName(e.target.value)}
+      />
 
-        <Button
-          variant="default"
-          className="validate-button"
-          disabled={isLoading}
-          onClick={handleValidateCandidate}
-        >
-          {isLoading ? "Validating..." : "🧾 Validate Candidate"}
-        </Button>
-
-        {validationResult && (
-          <div
-            className={`validation-result ${validationResult.valid_name
-              ? "validation-success"
-              : "validation-error"
-              }`}
-          >
-            <p className="validation-result-item">{validationResult.message}</p>
-          </div>
-        )}
+      <div style={{ marginTop: 8 }}>
+        <Button onClick={handleValidate}>Validate (start camera)</Button>
       </div>
 
-      {/* Right Panel - Face Capture (only visible when validation passes) */}
-      {validationResult?.valid_name && (
-        <div className="face-capture">
-          <video ref={videoRef} autoPlay playsInline width="200" height="150" />
-          <canvas
-            ref={canvasRef}
-            width="200"
-            height="150"
-            style={{ display: "none" }}
-          />
+      <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
+        <div>
+          <video ref={videoRef} autoPlay muted width="320" height="240" />
+          <canvas ref={canvasRef} style={{ display: "none" }} />
+        </div>
 
-          {capturedImage && (
-            <img
-              src={capturedImage}
-              alt="Captured face"
-              className="face-preview"
-            />
-          )}
-
-          <div className="face-buttons">
-            <Button onClick={captureFace} size="sm">
-              📸 Capture
-            </Button>
-            <Button onClick={saveFaceToBackend} size="sm">
-              💾 Save
-            </Button>
-          </div>
-
-          {capturedImage && !isSaved && (
-            <p className="face-warn">💾 Please save your captured image.</p>
-          )}
-          {isSaved && <p className="face-ok">✅ Face image saved!</p>}
-
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <Button onClick={captureFace}>📸 Capture</Button>
+          <Button onClick={saveFaceToBackend}>💾 Save</Button>
           <Button
             variant="outline"
-            size="sm"
-            onClick={handleStartInterview}
+            onClick={handleGoInstructions}
             disabled={!isSaved}
-            className="start-interview-button"
           >
-            🎯 Start Interview
+            🎯 Go to Instructions
           </Button>
+
+          {isSaved ? (
+            <div style={{ color: "green" }}>
+              ✅ Face saved — ready to continue
+            </div>
+          ) : (
+            <div style={{ color: "#888" }}>Save face to continue</div>
+          )}
         </div>
-      )}
+      </div>
+
+      <div style={{ marginTop: 12 }}>
+        <strong>Loaded JD: </strong>
+        <pre
+          style={{
+            maxHeight: 100,
+            overflow: "auto",
+            background: "#f9f9f9",
+            padding: 8,
+          }}
+        >
+          {jdText?.slice(0, 200)}...
+        </pre>
+      </div>
+
+      <div style={{ marginTop: 12, opacity: 0.8 }}>
+        <strong>Debug:</strong>
+        <br />
+        Name: {candidateName}
+        <br />
+        ID: {candidateId}
+        <br />
+        JD ID: {jdId}
+      </div>
     </div>
   );
-};
-
-export default ValidationPanel;
+}
