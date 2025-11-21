@@ -3,9 +3,10 @@ import { Mail, MessageSquare, Bot } from "lucide-react";
 import { sendMailMessage, sendWhatsAppMessage } from "@/utils/api";
 import { API_BASE } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
+import { BsGraphUpArrow } from "react-icons/bs";
 import "./ProfileTable.css";
 
-/* ========================= SCORE (MOVED TO TOP) ========================= */
+/* ========================= AUTO SCORE ========================= */
 const calculateAutoScore = (item) => {
   if (item.experience_years >= 6) return Math.floor(Math.random() * 10) + 90;
   if (item.experience_years >= 2 && item.experience_years <= 3)
@@ -14,6 +15,7 @@ const calculateAutoScore = (item) => {
   return Math.floor(Math.random() * 20) + 50;
 };
 
+/* ========================= MAIN TABLE ========================= */
 const ProfileTable = ({ data, index, jdId }) => {
   const [filterQuery, setFilterQuery] = useState("");
   const [minScoreFilter, setMinScoreFilter] = useState(0);
@@ -27,18 +29,15 @@ const ProfileTable = ({ data, index, jdId }) => {
 
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-
   const [showSendMenu, setShowSendMenu] = useState(false);
 
   const navigate = useNavigate();
 
-  // ⭐ AI INTERVIEW BUTTON (correct JD routing)
+  /* ========================= AI INTERVIEW ========================= */
   const handleStartAIInterview = async (item) => {
     if (!jdId) return alert("No JD ID found for this match!");
 
-    const jdRes = await fetch(
-      `${API_BASE}/mcp/tools/jd_history/jd/history/${jdId}`
-    );
+    const jdRes = await fetch(`${API_BASE}/mcp/tools/jd_history/jd/history/${jdId}`);
     const jdData = await jdRes.json();
 
     if (!jdData?.jd_text) return alert("JD not found!");
@@ -53,7 +52,7 @@ const ProfileTable = ({ data, index, jdId }) => {
     });
   };
 
-  // ⭐ SELECT ALL
+  /* ========================= SELECT ALL ========================= */
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedRows([]);
@@ -63,7 +62,7 @@ const ProfileTable = ({ data, index, jdId }) => {
     setSelectAll(!selectAll);
   };
 
-  // ⭐ SINGLE ROW SELECT
+  /* ========================= SELECT ONE ========================= */
   const handleRowSelect = (item) => {
     const exists = selectedRows.find((x) => x.phone === item.phone);
 
@@ -74,7 +73,7 @@ const ProfileTable = ({ data, index, jdId }) => {
     }
   };
 
-  // ⭐ BULK SEND EMAIL / WHATSAPP
+  /* ========================= BULK SEND ========================= */
   const handleBulkSend = async (type) => {
     if (selectedRows.length === 0)
       return alert("Please select at least one candidate.");
@@ -92,7 +91,7 @@ const ProfileTable = ({ data, index, jdId }) => {
     setShowSendMenu(false);
   };
 
-  // ⭐ SORT + FILTER
+  /* ========================= SORT + FILTER ========================= */
   const sortAndFilterMatches = (matches) => {
     if (!Array.isArray(matches)) return [];
 
@@ -100,10 +99,7 @@ const ProfileTable = ({ data, index, jdId }) => {
       key.split(".").reduce((acc, k) => (acc ? acc[k] : undefined), obj);
 
     const filtered = matches.filter((m) => {
-      if (
-        typeof m?.scores?.final_score === "number" &&
-        m.scores.final_score < minScoreFilter
-      )
+      if (typeof m?.scores?.final_score === "number" && m.scores.final_score < minScoreFilter)
         return false;
 
       if (!filterQuery) return true;
@@ -112,9 +108,7 @@ const ProfileTable = ({ data, index, jdId }) => {
       const nameOk = (m.name || "").toLowerCase().includes(q);
       const skillsOk = (
         Array.isArray(m.skills) ? m.skills.join(", ") : m.skills || ""
-      )
-        .toLowerCase()
-        .includes(q);
+      ).toLowerCase().includes(q);
 
       return nameOk || skillsOk;
     });
@@ -131,13 +125,11 @@ const ProfileTable = ({ data, index, jdId }) => {
     return sorted;
   };
 
-  // ⭐ Fetch WhatsApp responses
+  /* ========================= WHATSAPP RESPONSES ========================= */
   useEffect(() => {
     const fetchResponses = async () => {
       try {
-        const res = await fetch(
-          `${API_BASE}/mcp/tools/match/whatsapp/responses`
-        );
+        const res = await fetch(`${API_BASE}/mcp/tools/match/whatsapp/responses`);
         if (res.ok) {
           const data = await res.json();
           setResponses(data);
@@ -152,6 +144,11 @@ const ProfileTable = ({ data, index, jdId }) => {
     return () => clearInterval(interval);
   }, []);
 
+  /* ========================= AUTO SCORE ========================= */
+  data.forEach((item) => {
+    item.autoScore = calculateAutoScore(item);
+  });
+
   let displayedMatches = sortAndFilterMatches(data || []);
 
   if (selectedCategory) {
@@ -164,19 +161,18 @@ const ProfileTable = ({ data, index, jdId }) => {
     });
   }
 
-  // ⭐ Summary counts
+  /* ========================= SUMMARY ========================= */
   const summary = { best: 0, good: 0, partial: 0 };
   data.forEach((item) => {
-    const autoScore = calculateAutoScore(item);
-    item.autoScore = autoScore;
-
-    if (autoScore >= 85) summary.best++;
-    else if (autoScore >= 60) summary.good++;
+    if (item.autoScore >= 85) summary.best++;
+    else if (item.autoScore >= 60) summary.good++;
     else summary.partial++;
   });
 
   return (
     <div key={index} className="profile-box">
+
+      {/* FILTER BAR */}
       <div className="filters-row">
         <h2 className="title">🎯 Profile Matches</h2>
 
@@ -196,7 +192,6 @@ const ProfileTable = ({ data, index, jdId }) => {
             type="number"
             min={0}
             max={100}
-            step={1}
             placeholder="Min Score"
             className="input-box small"
             value={minScoreFilter}
@@ -220,8 +215,10 @@ const ProfileTable = ({ data, index, jdId }) => {
         </div>
       </div>
 
-      {/* ============= SEND DROPDOWN ============= */}
-      <div className="bulk-send-container">
+      {/* SEND + BADGES ROW */}
+      <div className="send-review-container">
+
+        {/* SEND BUTTON */}
         <div className="bulk-send-wrapper">
           <button
             className="bulk-send-btn"
@@ -236,20 +233,45 @@ const ProfileTable = ({ data, index, jdId }) => {
                 className="send-option action-style"
                 onClick={() => handleBulkSend("email")}
               >
-                <Mail size={16} /> <span>Email</span>
+                <Mail size={16} /> Email
               </button>
+
               <button
                 className="send-option action-style"
                 onClick={() => handleBulkSend("whatsapp")}
               >
-                <MessageSquare size={16} /> <span>WhatsApp</span>
+                <MessageSquare size={16} /> WhatsApp
               </button>
             </div>
           )}
         </div>
+
+        {/* BADGES */}
+        <div className="review-badges">
+          <span
+            className={`badge best ${selectedCategory === "best" ? "active" : ""}`}
+            onClick={() => setSelectedCategory("best")}
+          >
+            🏆 Best ({summary.best})
+          </span>
+
+          <span
+            className={`badge good ${selectedCategory === "good" ? "active" : ""}`}
+            onClick={() => setSelectedCategory("good")}
+          >
+            👍 Good ({summary.good})
+          </span>
+
+          <span
+            className={`badge partial ${selectedCategory === "partial" ? "active" : ""}`}
+            onClick={() => setSelectedCategory("partial")}
+          >
+            ⚙ Partial ({summary.partial})
+          </span>
+        </div>
       </div>
 
-      {/* ============= TABLE ============= */}
+      {/* TABLE */}
       {displayedMatches.length === 0 ? (
         <p>No matching profiles.</p>
       ) : (
@@ -257,11 +279,7 @@ const ProfileTable = ({ data, index, jdId }) => {
           <thead>
             <tr>
               <th>
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={handleSelectAll}
-                />
+                <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
               </th>
               <th>Name</th>
               <th>Designation</th>
@@ -295,16 +313,11 @@ const ProfileTable = ({ data, index, jdId }) => {
         </table>
       )}
 
-      <ReviewSummary
-        summary={summary}
-        selectedCategory={selectedCategory}
-        onCategorySelect={setSelectedCategory}
-      />
     </div>
   );
 };
 
-/* ========================= ROW ========================= */
+/* ========================= ROW COMPONENT ========================= */
 const ProfileTableRow = ({
   item,
   responses,
@@ -316,6 +329,13 @@ const ProfileTableRow = ({
   jdId,
   onStartInterview,
 }) => {
+  const [showStatusMenu, setShowStatusMenu] = useState(false);
+
+  const handleStatusChange = (status) => {
+    console.log("Status Updated:", item.name, status);
+    setShowStatusMenu(false);
+  };
+
   const normalizedPhone = (item.phone || "").replace(/\D/g, "");
   const whatsappResp = responses[normalizedPhone] || {};
 
@@ -377,66 +397,56 @@ const ProfileTableRow = ({
 
       <td className="actions-cell">
         <div className="action-group">
-          {/* EMAIL */}
-          <button
-            className="action-btn mail"
-            onClick={() => sendMailMessage(item, jdId)}
-          >
+
+          <button className="action-btn mail" onClick={() => onSendMail(item)}>
             <Mail size={16} /> Mail
           </button>
 
-          {/* WHATSAPP */}
           <button
-            className={`action-btn whatsapp ${
-              !whatsappAvailable ? "disabled" : ""
-            }`}
-            onClick={() => onSendWhatsApp(item, jdId)}
+            className={`action-btn whatsapp ${!whatsappAvailable ? "disabled" : ""}`}
+            onClick={() => onSendWhatsApp(item)}
             disabled={!whatsappAvailable}
           >
             <MessageSquare size={16} /> WhatsApp
           </button>
 
-          {/* AI INTERVIEW */}
-          <button
-            className="action-btn bot"
-            onClick={() => onStartInterview(item)}
-          >
+          <button className="action-btn bot" onClick={() => onStartInterview(item)}>
             <Bot size={16} /> AI
           </button>
+
+          {/* STATUS */}
+          <div className="status-wrapper">
+            <button
+              className="action-btn status"
+              onClick={() => setShowStatusMenu((prev) => !prev)}
+            >
+              <BsGraphUpArrow />Status 
+            </button>
+
+            {showStatusMenu && (
+              <div className="status-dropdown">
+                {/* <button  className="shortlisted" onClick={() => handleStatusChange("Shortlisted")}>
+                  Shortlisted
+                </button>
+                <button className="rejected" onClick={() => handleStatusChange("Rejected")}>
+                  Rejected
+                </button>
+                <button className="on-hold" onClick={() => handleStatusChange("On Hold")}>
+                  On Hold
+                </button>
+                <button className="interview-scheduled" onClick={() => handleStatusChange("Interview Scheduled")}>
+                  Interview Scheduled
+                </button> */}
+              </div>
+            )}
+          </div>
         </div>
       </td>
 
       <td className="score">{item.autoScore}/100</td>
-
       <td>{whatsappResp?.type === "button" ? whatsappResp.payload : "—"}</td>
     </tr>
   );
 };
-
-/* ========================= SUMMARY ========================= */
-const ReviewSummary = ({ summary, selectedCategory, onCategorySelect }) => (
-  <div className="summary-box">
-    <div className="review-cards">
-      {["best", "good", "partial"].map((type) => (
-        <div
-          key={type}
-          className={`review-card ${selectedCategory === type ? "active" : ""}`}
-          onClick={() => onCategorySelect(type)}
-        >
-          <h4>
-            {type === "best"
-              ? "🏆 Best Matches"
-              : type === "good"
-              ? "👍 Good Matches"
-              : "⚙ Partial Matches"}
-          </h4>
-          <p>{summary[type]} profiles</p>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-/* ========================= SCORE ========================= */
 
 export default ProfileTable;

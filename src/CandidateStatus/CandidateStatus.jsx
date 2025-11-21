@@ -1,123 +1,233 @@
 import React from "react";
 import "./CandidateStatus.css";
-
-// 📊 Recharts
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    Tooltip,
-    ResponsiveContainer,
-} from "recharts";
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Download, MoreVertical } from "lucide-react";
+import logo from "../assets/primehire_logo.png";
 import { Link } from "react-router-dom";
+ 
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CandidateStatus = () => {
-    // Bar chart data
-    const chartData = [
-        { name: "Applied", value: 250 },
-        { name: "Shortlisted", value: 70 },
-        { name: "Interview", value: 25 },
-        { name: "Onboarding", value: 12 },
-    ];
+  const statusData = {
+    labels: [
+      "Disconnected",
+      "Not Started",
+      "Blocked",
+      "Completed",
+      "In Progress",
+      "Test Stopped",
+      "Yet To Start",
+    ],
+    datasets: [
+      {
+        data: [4, 6, 1, 12, 1, 1, 18],
+        backgroundColor: [
+          "#9da9c9", // Disconnected
+          "#e4e7eb", // Not started
+          "#c0392b", // Blocked
+          "#2ecc71", // Completed
+          "#1e90ff", // In-progress
+          "#7d4db5", // Test stopped
+          "#0a2d5c", // Yet to start
+        ],
+        borderWidth: 0,
+      },
+    ],
+  };
 
-    return (
-        <div className="dashboard-container">
-            <h2 className="dashboard-title">Candidate Status Dashboard</h2>
+const performanceData = {
+  labels: ["Excellent (7)", "Poor (2)", "Average (7)", "Good (1)", "Below Average"],
+  datasets: [
+    {
+      data: [7, 2, 7, 1, 0],
+      backgroundColor: [
+        "#0E90E0", // Excellent
+        "#DB3C7F", // Poor
+        "#18A999", // Average
+        "#0FB89A", // Good
+        "#5641A6"  // Below Average
+      ],
+      borderWidth: 0,
+    },
+  ],
+};
 
-            {/* Stats Section */}
-            <div className="stats-container">
-                <div className="stat-card">
-                    <p>Total Candidates</p>
-                    <h3>432</h3>
-                </div>
-                <div className="stat-card">
-                    <p>Pending Screening</p>
-                    <h3>24</h3>
-                </div>
-                <div className="stat-card">
-                    <p>Offers Released</p>
-                    <h3>6</h3>
-                </div>
-                <div className="stat-card">
-                    <p>Profile Match Score</p>
-                    <h3>75%</h3>
-                </div>
 
-                {/* Search */}
-                <div className="search-box">
-                    <input type="text" placeholder="Search..." />
-                </div>
+  const testTakers = [
+    { id: 1, name: "j12", email: "j12@mettl.com", status: "Completed", totalScore: 20, sectionScores: [2, 6, 8, 4] },
+    { id: 2, name: "jasleen", email: "jasleen.sandhu@mettl.com", status: "Completed", totalScore: 20, sectionScores: [2, 6, 8, 4] },
+    { id: 3, name: "abc", email: "abc@gmail.com", status: "Completed", totalScore: 20, sectionScores: [2, 6, 8, 4] },
+  ];
+
+  return (
+    <div className="candidate-container">
+       <Link to={"/"}> <div className="top-header">
+        <img src={logo} alt="Logo" className="top-logo" />
+      </div></Link>
+
+      {/* Top Card Section */}
+      <div className="top-cards">
+
+        {/* Test Overview */}
+        <div className="card">
+          <h4>Test Overview</h4>
+          <div className="card-stats">
+            <div>
+              <p>Total Test Links</p>
+              <h2>14</h2>
             </div>
-
-            {/* Bottom Section */}
-            <div className="bottom-section">
-                {/* Chart Section */}
-                <div className="chart-box">
-                    <h3>Candidate Status</h3>
-
-                    <ResponsiveContainer width="100%" height={260}>
-                        <BarChart data={chartData}>
-                            <XAxis dataKey="name" stroke="#102a43" />
-                            <YAxis stroke="#102a43" />
-                            <Tooltip />
-                            <Bar dataKey="value" fill="#4a90e2" />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-
-                {/* Table Section */}
-                <div className="table-box">
-                    <h3>Candidates</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Interview Round</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <Link to="/candidate-overview" className="candidate-link">
-                                        Jane Smith
-                                    </Link>
-                                </td>
-                                <td>janesmith@example.com</td>
-                                <td>(123) 456-7830</td>
-                                <td>Round 2</td>
-                                <td className="status-shortlisted">Shortlisted</td>
-                            </tr>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>johndoe@example.com</td>
-                                <td>(997) 654-3210</td>
-                                <td>Applied</td>
-                                <td>Applied</td>
-                            </tr>
-                            <tr>
-                                <td>Emily Johns</td>
-                                <td>emilyj@example.com</td>
-                                <td>(555) 123-4567</td>
-                                <td>Reported</td>
-                                <td className="status-completed">Interview Completed</td>
-                            </tr>
-                            <tr>
-                                <td>Michael Brown</td>
-                                <td>mbrown@example.com</td>
-                                <td>(444) 567-8801</td>
-                                <td>Round 1</td>
-                                <td>Applied</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div>
+              <p>Total Test-Takers</p>
+              <h2>41</h2>
             </div>
+          </div>
+          <p className="sub-info">Reports: 17 / 41</p>
         </div>
-    );
+
+        {/* Status Summary */}
+        <div className="card">
+          <div className="flex-between">
+            <h4>Status Summary</h4>
+            <span className="total-count">41 Total Test-Takers</span>
+          </div>
+
+          <div className="chart-box">
+            <Doughnut
+              data={statusData}
+              options={{
+                cutout: "65%",
+                plugins: { legend: { display: false } },
+              }}
+            />
+          </div>
+
+          {/* === STATUS LEGEND BELOW CHART === */}
+          <div className="status-legend">
+
+            <div className="legend-item">
+              <span className="legend-dot disconnected"></span>
+              <p>Disconnected (4)</p>
+            </div>
+
+            <div className="legend-item">
+              <span className="legend-dot not-started"></span>
+              <p>Not started (6)</p>
+            </div>
+
+            <div className="legend-item">
+              <span className="legend-dot in-progress"></span>
+              <p>In-progress (1)</p>
+            </div>
+
+            <div className="legend-item">
+              <span className="legend-dot test-stopped"></span>
+              <p>Test stopped (1)</p>
+            </div>
+
+            <div className="legend-item">
+              <span className="legend-dot blocked"></span>
+              <p>Blocked (1)</p>
+            </div>
+
+            <div className="legend-item">
+              <span className="legend-dot completed"></span>
+              <p>Completed (12)</p>
+            </div>
+
+            <div className="legend-item">
+              <span className="legend-dot yet"></span>
+              <p>Yet to start (18)</p>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Performance Category */}
+        <div className="card performance-card">
+          <div className="flex-between">
+            <h4>Performance Category</h4>
+          </div>
+
+          <div className="performance-chart-box">
+            <Doughnut
+              data={performanceData}
+              options={{
+                cutout: "65%",
+                plugins: {
+                  legend: {
+                    display: true,
+                    position: "bottom",
+                    labels: {
+                      usePointStyle: true,
+                      pointStyle: "circle",
+                      padding: 15,
+                      font: { size: 12 },
+                    },
+                  },
+                },
+              }}
+            />
+
+            {/* Center Text */}
+            <div className="doughnut-center">
+              <h2>17</h2>
+              <p>Reports</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Table Header */}
+      <div className="table-header">
+        <h4>Test-Takers List</h4>
+        <p>41 Test-Takers</p>
+      </div>
+
+      {/* Controls */}
+      <div className="table-controls">
+        <input type="text" placeholder="Search by name" />
+        <button className="btn">Reset</button>
+        <button className="btn download-btn"><Download size={16} /> Download</button>
+      </div>
+
+      {/* Table */}
+      <table className="test-table">
+        <thead>
+          <tr>
+            <th>Name & Email</th>
+            <th>Overall Status</th>
+            <th>Detailed Status</th>
+            <th>Total Score</th>
+            <th>Section Score</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {testTakers.map((item) => (
+            <tr key={item.id}>
+              <td>
+                <div className="user-info">
+                  <span className="user-icon">{item.name.charAt(0)}</span>
+                  <div>
+                    <strong>{item.name}</strong>
+                    <p>{item.email}</p>
+                  </div>
+                </div>
+              </td>
+              <td><span className="status-tag">{item.status}</span></td>
+              <td>Test-taker Completed</td>
+              <td>{item.totalScore}</td>
+              <td>{item.sectionScores.join("  ")}</td>
+              <td><MoreVertical size={16} className="action-icon" /></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export default CandidateStatus;
