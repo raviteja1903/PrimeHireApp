@@ -1,9 +1,13 @@
 import React from "react";
 import "./CandidateOverview.css";
+import logo from "../assets/primehire_logo.png";
 
 const CandidateOverview = () => {
     return (
         <div className="candidate-status-container">
+            <div className="top-header1">
+                <img src={logo} alt="Logo" className="top-logo2" />
+            </div>
             <h2 className="title">CANDIDATE STATUS</h2>
 
             <div className="status-card">

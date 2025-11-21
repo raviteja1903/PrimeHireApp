@@ -205,26 +205,35 @@ const performanceData = {
           </tr>
         </thead>
 
-        <tbody>
-          {testTakers.map((item) => (
-            <tr key={item.id}>
-              <td>
-                <div className="user-info">
-                  <span className="user-icon">{item.name.charAt(0)}</span>
-                  <div>
-                    <strong>{item.name}</strong>
-                    <p>{item.email}</p>
-                  </div>
-                </div>
-              </td>
-              <td><span className="status-tag">{item.status}</span></td>
-              <td>Test-taker Completed</td>
-              <td>{item.totalScore}</td>
-              <td>{item.sectionScores.join("  ")}</td>
-              <td><MoreVertical size={16} className="action-icon" /></td>
-            </tr>
-          ))}
-        </tbody>
+      <tbody>
+  {testTakers.map((item) => (
+    <tr key={item.id}>
+      <td>
+        <div className="user-info">
+          <span className="user-icon">{item.name.charAt(0)}</span>
+          <div>
+            <strong>
+              <Link to={`/candidate/${item.id}`} className="user-link">
+                {item.name}
+              </Link>
+            </strong>
+            <p>
+              <Link to={`/candidate/${item.id}`} className="user-link">
+                {item.email}
+              </Link>
+            </p>
+          </div>
+        </div>
+      </td>
+      <td><span className="status-tag">{item.status}</span></td>
+      <td>Test-taker Completed</td>
+      <td>{item.totalScore}</td>
+      <td>{item.sectionScores.join("  ")}</td>
+      <td><MoreVertical size={16} className="action-icon" /></td>
+    </tr>
+  ))}
+</tbody>
+
       </table>
     </div>
   );
