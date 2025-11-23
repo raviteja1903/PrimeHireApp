@@ -19,6 +19,29 @@
   border-right: 1px solid #e0e0e0;
   border-radius: 0;
 }
+.warning-banner {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 0, 0, 0.85);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 10;
+  animation: blink 1s infinite;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+}
+
+@keyframes blink {
+  50% { opacity: 0.4; }
+}
 
 .webcam-left-panel h3 {
   margin: 0 0 12px 0;

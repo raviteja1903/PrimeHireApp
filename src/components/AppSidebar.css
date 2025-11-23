@@ -56,6 +56,7 @@
   color: #6b7280;
   transition: color 0.25s ease;
 }
+ 
 
 .sidebar-btn:hover .icon {
   color: #4f46e5;
@@ -96,14 +97,14 @@
   }
 }
 
-@keyframes bounce {
+/* @keyframes bounce {
   0%, 100% {
     transform: translateY(0);
   }
   50% {
     transform: translateY(-3px);
   }
-}
+} */
 
 @keyframes pulse {
   0% {
@@ -209,7 +210,10 @@
   width: 1px;
   background: rgba(0, 0, 0, 0.08);
 }
-
+.sidebar-btn.active .sidebar-icon,
+.sidebar-btn.active .sidebar-icon svg {
+  color: #ffffff !important;
+}
 /* Prevent layout overflow */
 html, body, #root {
   overflow-x: hidden !important;

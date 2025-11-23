@@ -25,8 +25,7 @@
 
 /* 👇 Add padding below main layout to prevent content overlap */
 body,
-.main-content,
-.chat-container {
+.main-content {
   padding-top: 64px;
   /* Same height as header */
 }

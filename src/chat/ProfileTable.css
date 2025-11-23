@@ -378,9 +378,22 @@
 }
 
 
-/* =================================================
-      NAME + SCORE + LABEL
-================================================= */
+ .loader {
+  border: 2px solid #eee;
+  border-top: 2px solid #000;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  margin-right: 6px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 .name {
   font-weight: 700;

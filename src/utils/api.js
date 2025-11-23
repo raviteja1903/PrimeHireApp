@@ -151,80 +151,7 @@ export const generateJd = async (inputs, setMessages, setIsLoading) => {
 };
 
 
-// export const generateJd = async (inputs, setMessages, setIsLoading) => {
-//   const payload = {
-//     role: inputs.role || "",
-//     location: inputs.location || "",
-//     years: parseInt(inputs.experience) || 0,
-//     job_type: inputs.jobType || "Full-time",
-//     skills: [
-//       ...(Array.isArray(inputs.skillsMandatory) ? inputs.skillsMandatory : []),
-//       ...(Array.isArray(inputs.skillsPreferred) ? inputs.skillsPreferred : []),
-//     ],
-//     responsibilities: normalizeArray(inputs.responsibilities),
-//     about_company: inputs.about || "",
-//     qualifications: normalizeArray(inputs.perks),
-//   };
 
-//   try {
-//     const response = await fetch(`${API_BASE}/mcp/tools/jd/generate`, {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(payload),
-//     });
-
-//     if (!response.ok)
-//       throw new Error(`JD generation failed: ${response.status}`);
-
-//     const result = await response.json();
-//     const jdText = result?.result?.markdown_jd || "";
-//     window.__LAST_GENERATED_JD__ = jdText;
-
-//     // -----------------------------------------
-//     // ✅ SHOW GENERATED JD IN CHAT
-//     // -----------------------------------------
-//     setMessages((prev) => [
-//       ...prev,
-//       {
-//         role: "assistant",
-//         content: jdText || "✅ JD generated",
-//       },
-//     ]);
-
-//     // -----------------------------------------
-//     // ✅ SAVE JD TO DATABASE
-//     // -----------------------------------------
-//     const designation = inputs.role || "";
-//     const skills = [
-//       ...(inputs.skillsMandatory || []),
-//       ...(inputs.skillsPreferred || []),
-//     ].join(", ");
-
-//     await fetch(`${API_BASE}/mcp/tools/jd_history/jd/save`, {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({
-//         designation,
-//         skills,
-//         jd_text: jdText,
-//       }),
-//     });
-
-//     console.log("💾 JD saved to DB successfully!");
-//   } catch (err) {
-//     console.error("❌ generateJd error:", err);
-
-//     setMessages((prev) => [
-//       ...prev,
-//       {
-//         role: "assistant",
-//         content: "❌ Failed to generate JD. Please try again.",
-//       },
-//     ]);
-//   } finally {
-//     setIsLoading(false);
-//   }
-// };
 
 
 export const uploadResumes = async (files) => {
@@ -244,7 +171,71 @@ export const uploadResumes = async (files) => {
   return await response.json();
 };
 
-export const sendMailMessage = async (item) => {
+// export const sendMailMessage = async (item, jdId) => {
+//   try {
+//     const email = item.email?.trim();
+//     if (!email) {
+//       alert("⚠️ No email address available for this candidate");
+//       return;
+//     }
+
+//     // item MUST contain candidate_id from database
+//     const candidateId = item.candidate_id;
+//     if (!candidateId) {
+//       alert("❌ Missing candidate_id for this candidate!");
+//       console.error("Item:", item);
+//       return;
+//     }
+
+//     const candidateName = item.full_name || item.name || "Candidate";
+
+//     // Fetch JD text
+//     const jdRes = await fetch(`${API_BASE}/mcp/tools/jd_history/jd/history/${jdId}`);
+//     const jdData = await jdRes.json();
+//     const jdText = jdData.jd_text || "Job description unavailable";
+
+//     // ✔️ Correct link
+//     const interviewLink = `https://primehire-beta-ui.vercel.app/validation_panel?candidateId=${encodeURIComponent(
+//       candidateId
+//     )}&candidateName=${encodeURIComponent(candidateName)}&jd_id=${jdId}`;
+
+//     const messageText = `
+// Hi ${candidateName},
+
+// Below is your job description for the interview:
+// -----------------------------------------
+// ${jdText}
+// -----------------------------------------
+
+// Please click the link below to begin your interview:
+// ${interviewLink}
+
+// Thanks,
+// PrimeHire Team
+// `;
+
+//     const payload = {
+//       email,
+//       candidate_name: candidateName,
+//       message: messageText,
+//     };
+
+//     const res = await fetch(`${API_BASE}/mcp/tools/match/send_mail`, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(payload),
+//     });
+
+//     if (!res.ok) throw new Error("Email failed");
+
+//     alert(`📧 Email sent to ${candidateName}`);
+//   } catch (err) {
+//     console.error("Email send error:", err);
+//     alert("Failed to send email. See console.");
+//   }
+// };
+
+export const sendMailMessage = async (item, jdId) => {
   try {
     const email = item.email?.trim();
     if (!email) {
@@ -252,29 +243,53 @@ export const sendMailMessage = async (item) => {
       return;
     }
 
-    const messageText = `Hi ${item.name}, are you available for the interview?`;
-
-    const response = await fetch(`${API_BASE}/mcp/tools/match/send_mail`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: item.email,
-        candidate_name: item.name,
-        message: messageText,
-      }),
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Status ${response.status} - ${text}`);
+    const candidateId = item.candidate_id;   // MUST be from DB
+    if (!candidateId) {
+      alert("❌ Missing candidate_id!");
+      return;
     }
 
-    const result = await response.json();
-    console.log("✅ Mail sent:", result);
-    alert(`✅ Email sent successfully to ${item.name}`);
+    const candidateName = item.full_name || item.name || "Candidate";
+
+    // Fetch JD text
+    const jdRes = await fetch(`${API_BASE}/mcp/tools/jd_history/jd/history/${jdId}`);
+    const jdData = await jdRes.json();
+    const jdText = jdData.jd_text || "Job description unavailable";
+
+    // 👉 NEW: Scheduler link
+    const schedulerLink = `https://primehire-beta-ui.vercel.app/scheduler?candidateId=${encodeURIComponent(
+      candidateId
+    )}&candidateName=${encodeURIComponent(candidateName)}&jd_id=${jdId}`;
+
+    const messageText = `
+Hi ${candidateName},
+
+Below is your job description for the interview:
+-----------------------------------------
+${jdText}
+-----------------------------------------
+
+Please click the link below to schedule your interview:
+${schedulerLink}
+
+Thanks,
+PrimeHire Team
+`;
+
+    const payload = { email, candidate_name: candidateName, message: messageText };
+
+    const res = await fetch(`${API_BASE}/mcp/tools/match/send_mail`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error("Email failed");
+
+    alert(`📧 Email sent to ${candidateName}`);
   } catch (err) {
-    console.error("❌ Failed to send email:", err);
-    alert(`❌ Failed to send email: ${err.message}`);
+    console.error("Email send error:", err);
+    alert("Failed to send email. See console.");
   }
 };
 
@@ -384,4 +399,3 @@ export const checkWhatsAppStatus = async () => {
     return false;
   }
 };
-

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Mail, MessageSquare, Bot } from "lucide-react";
+import { Mail, MessageSquare, Share2 } from "lucide-react";
 import { sendMailMessage, sendWhatsAppMessage } from "@/utils/api";
 import { API_BASE } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
@@ -331,6 +331,39 @@ const ProfileTableRow = ({
 }) => {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
 
+  /* 🚀 LOADING STATES FOR BUTTONS */
+  const [mailLoading, setMailLoading] = useState(false);
+  const [waLoading, setWaLoading] = useState(false);
+  const [shareLoading, setShareLoading] = useState(false);
+  const [statusLoading, setStatusLoading] = useState(false);
+
+  /* 🚀 Wrapped Handlers with Loading Animation */
+  const handleMailClick = async () => {
+    setMailLoading(true);
+    await onSendMail(item);
+    setMailLoading(false);
+  };
+
+  const handleWhatsAppClick = async () => {
+    setWaLoading(true);
+    await onSendWhatsApp(item);
+    setWaLoading(false);
+  };
+
+  const handleShareClick = async () => {
+    setShareLoading(true);
+    await onStartInterview(item);
+    setShareLoading(false);
+  };
+
+  const handleStatusClick = () => {
+    setStatusLoading(true);
+    setTimeout(() => {
+      setStatusLoading(false);
+      setShowStatusMenu((prev) => !prev);
+    }, 500);
+  };
+
   const handleStatusChange = (status) => {
     console.log("Status Updated:", item.name, status);
     setShowStatusMenu(false);
@@ -395,37 +428,74 @@ const ProfileTableRow = ({
       <td>{item.experience_years} yrs</td>
       <td>{(item.skills || []).join(", ")}</td>
 
+      {/* ACTIONS */}
       <td className="actions-cell">
         <div className="action-group">
 
-          <button className="action-btn mail" onClick={() => onSendMail(item)}>
-            <Mail size={16} /> Mail
+          {/* MAIL */}
+          <button className="action-btn mail" onClick={handleMailClick} disabled={mailLoading}>
+            {mailLoading ? (
+              <>
+                <span className="loader"></span> Sending...
+              </>
+            ) : (
+              <>
+                <Mail size={16} /> Mail
+              </>
+            )}
           </button>
 
+          {/* WHATSAPP */}
           <button
             className={`action-btn whatsapp ${!whatsappAvailable ? "disabled" : ""}`}
-            onClick={() => onSendWhatsApp(item)}
-            disabled={!whatsappAvailable}
+            onClick={handleWhatsAppClick}
+            disabled={!whatsappAvailable || waLoading}
           >
-            <MessageSquare size={16} /> WhatsApp
+            {waLoading ? (
+              <>
+                <span className="loader"></span> Sending...
+              </>
+            ) : (
+              <>
+                <MessageSquare size={16} /> WhatsApp
+              </>
+            )}
           </button>
 
-          <button className="action-btn bot" onClick={() => onStartInterview(item)}>
-            <Bot size={16} /> AI
+          {/* SHARE TO CLIENT */}
+          <button className="action-btn bot" onClick={handleShareClick} disabled={shareLoading}>
+            {shareLoading ? (
+              <>
+                <span className="loader"></span> Sending...
+              </>
+            ) : (
+              <>
+                <Share2 size={16} /> Share to Client
+              </>
+            )}
           </button>
 
           {/* STATUS */}
           <div className="status-wrapper">
             <button
               className="action-btn status"
-              onClick={() => setShowStatusMenu((prev) => !prev)}
+              onClick={handleStatusClick}
+              disabled={statusLoading}
             >
-              <BsGraphUpArrow />Status 
+              {statusLoading ? (
+                <>
+                  <span className="loader"></span> Loading...
+                </>
+              ) : (
+                <>
+                  <BsGraphUpArrow /> Status
+                </>
+              )}
             </button>
 
             {showStatusMenu && (
               <div className="status-dropdown">
-                {/* <button  className="shortlisted" onClick={() => handleStatusChange("Shortlisted")}>
+                <button className="shortlisted" onClick={() => handleStatusChange("Shortlisted")}>
                   Shortlisted
                 </button>
                 <button className="rejected" onClick={() => handleStatusChange("Rejected")}>
@@ -436,7 +506,7 @@ const ProfileTableRow = ({
                 </button>
                 <button className="interview-scheduled" onClick={() => handleStatusChange("Interview Scheduled")}>
                   Interview Scheduled
-                </button> */}
+                </button>
               </div>
             )}
           </div>

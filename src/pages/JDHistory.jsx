@@ -1,273 +1,93 @@
-// JDHistory.jsx (FULL patched version)
-// Place under your frontend project replacing old JDHistory.jsx
+// JDHistory.jsx (With Delete Only Candidate Match Feature)
 
 import React, { useEffect, useState } from "react";
-import { Copy, Eye, RefreshCcw, PlusSquare, Edit, Send } from "lucide-react";
+import { Copy, Eye, RefreshCcw, PlusSquare, Edit, Send, Trash2 } from "lucide-react";
 import { API_BASE } from "@/utils/constants";
 import "./JDHistory.css";
-import ProfileTable from "@/chat/ProfileTable";
 
 const JDHistory = () => {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // VIEW modal
     const [selected, setSelected] = useState(null);
-    const [copySuccess, setCopySuccess] = useState(false);
 
-    // Add manual questions modal
-    const [showAddQuestions, setShowAddQuestions] = useState(false);
-    const [questions, setQuestions] = useState([]);
-    const [currentJD, setCurrentJD] = useState(null);
-
-    // Matcher modal
+    // Matcher modal state
     const [matcherJD, setMatcherJD] = useState(null);
     const [matcherLoading, setMatcherLoading] = useState(false);
 
-    // Edit JD
-    const [showEditJD, setShowEditJD] = useState(false);
-    const [editData, setEditData] = useState({
-        designation: "",
-        skills: "",
-        jd_text: "",
-    });
-
-    // ---------------------------------------------------------
-    // Helper: fetch history
-    // ---------------------------------------------------------
+    // Load JD History
     const fetchHistory = async () => {
         setLoading(true);
         try {
             const res = await fetch(`${API_BASE}/mcp/tools/jd_history/jd/history`);
             const data = await res.json();
             setHistory(data.history || []);
-        } catch (err) {
-            console.error("Failed to fetch JD history:", err);
+            localStorage.setItem("jdHistory", JSON.stringify(data.history || []));
+        } catch (e) {
+            console.error("Failed:", e);
+            const local = localStorage.getItem("jdHistory");
+            if (local) setHistory(JSON.parse(local));
         }
         setLoading(false);
     };
 
-    // ---------------------------------------------------------
-    // Helper: fetch single JD details (always use to get fresh data)
-    // ---------------------------------------------------------
+    // Get single JD
     const fetchSingleJD = async (id) => {
         try {
             const res = await fetch(`${API_BASE}/mcp/tools/jd_history/jd/history/${id}`);
-            const data = await res.json();
-            return data;
-        } catch (err) {
-            console.error("Failed to fetch single JD:", err);
+            return await res.json();
+        } catch (e) {
+            console.error(e);
             return null;
         }
     };
 
-    // ---------------------------------------------------------
-    // OPEN JD (VIEW) - ALWAYS fetch fresh from backend
-    // ---------------------------------------------------------
-    const openJD = async (id) => {
-        const data = await fetchSingleJD(id);
-        if (!data) return;
-        setSelected({
-            ...data,
-            // Backend returns manual_questions & ai_questions as arrays
-            manualQuestions: data.manual_questions || [],
-            aiQuestions: data.ai_questions || [],
-            matches: data.matches || [],
-        });
-    };
-
-    // ---------------------------------------------------------
-    // OPEN Add Questions modal (load fresh manual questions)
-    // ---------------------------------------------------------
-    const openAddQuestions = async (jd) => {
-        setCurrentJD(jd);
-        const data = await fetchSingleJD(jd.id);
-        const existing = (data && data.manual_questions) ? data.manual_questions : [];
-        setQuestions(existing);
-        setShowAddQuestions(true);
-    };
-
-    const saveQuestions = async () => {
-        if (!currentJD) return;
-        try {
-            const res = await fetch(`${API_BASE}/mcp/tools/jd_history/jd/save_manual_questions/${currentJD.id}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ questions }),
-            });
-
-            const data = await res.json();
-            if (!res.ok) {
-                alert(data.detail || "Failed to save questions");
-                return;
-            }
-
-            // Update UI: refresh single JD if it's open
-            if (selected?.id === currentJD.id) {
-                // fetch fresh
-                const fresh = await fetchSingleJD(currentJD.id);
-                if (fresh) {
-                    setSelected({
-                        ...fresh,
-                        manualQuestions: fresh.manual_questions || [],
-                        aiQuestions: fresh.ai_questions || [],
-                        matches: fresh.matches || []
-                    });
-                }
-            }
-
-            setShowAddQuestions(false);
-            alert("Manual questions saved successfully!");
-        } catch (err) {
-            console.error("Failed to save manual questions:", err);
-            alert("Failed to save manual questions.");
-        }
-    };
-
-    // ---------------------------------------------------------
-    // GENERATE AI QUESTIONS (persisted in backend)
-    // ---------------------------------------------------------
-    const generateAIQuestions = async () => {
-        if (!selected) return;
-        try {
-            const res = await fetch(`${API_BASE}/mcp/tools/jd_history/jd/generate_ai_questions/${selected.id}`, {
-                method: "POST",
-            });
-            const data = await res.json();
-
-            if (!res.ok) {
-                alert(data.detail || "Failed to generate AI questions");
-                return;
-            }
-
-            // fetch fresh JD to get persisted ai_questions
-            const fresh = await fetchSingleJD(selected.id);
-            if (fresh) {
-                setSelected({
-                    ...fresh,
-                    manualQuestions: fresh.manual_questions || [],
-                    aiQuestions: fresh.ai_questions || [],
-                    matches: fresh.matches || []
-                });
-            }
-
-            alert("AI questions generated and saved!");
-        } catch (err) {
-            console.error("AI generation failed:", err);
-            alert("Failed to generate AI questions.");
-        }
-    };
-
-    // ---------------------------------------------------------
-    // MATCHER modal — fetch JD row (with matches)
-    // ---------------------------------------------------------
+    // Open Matcher
     const openMatcher = async (id) => {
-        setMatcherLoading(true);  // 🔥 start loading
+        setMatcherLoading(true);
         try {
-            const matchRes = await fetch(`${API_BASE}/mcp/tools/jd_history/jd/match_profiles/${id}`, {
-                method: "POST"
-            });
-
-            const matchJson = await matchRes.json();
+            await fetch(`${API_BASE}/mcp/tools/jd_history/jd/match_profiles/${id}`, { method: "POST" });
             const data = await fetchSingleJD(id);
 
-            setMatcherJD({
+            const jdData = {
                 ...data,
                 matches: data.matches || []
-            });
+            };
 
-            // refresh table counts
-            await fetchHistory();
-        } catch (err) {
-            console.error("Matcher failed:", err);
-            setMatcherJD({ matches: [] });
+            setMatcherJD(jdData);
+        } catch (e) {
+            console.error("Matcher failed:", e);
         }
-        setMatcherLoading(false); // ❗ stop loading
+        setMatcherLoading(false);
     };
 
+    // Delete ONLY profile from matches list
+    const deleteProfileFromMatch = (profileId) => {
+        if (!matcherJD) return;
 
+        const updatedMatches = matcherJD.matches.filter(
+            (p) => p.id !== profileId
+        );
 
-    // ---------------------------------------------------------
-    // SEND JD TO CLIENT
-    // ---------------------------------------------------------
-    const sendToClient = async (jd) => {
-        try {
-            const res = await fetch(`${API_BASE}/mcp/tools/jd_history/jd/send_to_client/${jd.id}`, {
-                method: "POST"
-            });
-            const data = await res.json();
-            if (data.success) {
-                alert("JD sent to client successfully!");
-            } else {
-                alert(data.message || "Failed to send JD.");
-            }
-        } catch (err) {
-            console.error("Send to client failed:", err);
-            alert("Error sending JD to client.");
-        }
+        const updatedJD = { ...matcherJD, matches: updatedMatches };
+        setMatcherJD(updatedJD);
+
+        const updatedHistory = history.map((jd) =>
+            jd.id === matcherJD.id ? updatedJD : jd
+        );
+
+        setHistory(updatedHistory);
+        localStorage.setItem("jdHistory", JSON.stringify(updatedHistory));
     };
 
-    // ---------------------------------------------------------
-    // EDIT / SAVE JD
-    // ---------------------------------------------------------
-    const openEditJD = () => {
-        if (!selected) return;
-        setEditData({
-            designation: selected.designation,
-            skills: selected.skills,
-            jd_text: selected.jd_text,
-        });
-        setShowEditJD(true);
-    };
-
-    const saveEditedJD = async () => {
-        if (!selected) return;
-        try {
-            const res = await fetch(`${API_BASE}/mcp/tools/jd_history/jd/update/${selected.id}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(editData)
-            });
-            if (!res.ok) {
-                const data = await res.json();
-                alert(data.detail || "Failed to update JD");
-                return;
-            }
-            alert("JD Updated Successfully!");
-            setShowEditJD(false);
-            await fetchHistory();
-            setSelected(null);
-        } catch (err) {
-            console.error("Failed to save edited JD:", err);
-            alert("Failed to save JD.");
-        }
-    };
-
-    // ---------------------------------------------------------
-    // COPY JD text
-    // ---------------------------------------------------------
-    const copyJD = async (text) => {
-        try {
-            await navigator.clipboard.writeText(text);
-            setCopySuccess(true);
-            setTimeout(() => setCopySuccess(false), 1200);
-        } catch (err) {
-            console.error("Copy failed", err);
-        }
-    };
-
-    // ---------------------------------------------------------
-    // initial load
-    // ---------------------------------------------------------
+    // Load data first time
     useEffect(() => {
         fetchHistory();
     }, []);
 
-    // ---------------------------------------------------------
-    // UI
-    // ---------------------------------------------------------
     return (
         <div className="jd-history-container">
+
             <div className="jd-header">
                 <h1 className="jd-title">📄 Generated JD History</h1>
                 <button className="jd-button jd-refresh" onClick={fetchHistory}>
@@ -297,21 +117,12 @@ const JDHistory = () => {
                                 <td>{new Date(row.created_at).toLocaleString()}</td>
 
                                 <td className="jd-actions">
-                                    <button className="jd-button jd-view" onClick={() => openJD(row.id)}>
+                                    <button className="jd-button jd-view" onClick={() => setSelected(row)}>
                                         <Eye size={14} /> View
                                     </button>
 
                                     <button className="jd-button jd-matcher" onClick={() => openMatcher(row.id)}>
                                         🤝 Matcher
-                                    </button>
-
-                                    <button className="jd-button jd-add-questions" onClick={() => openAddQuestions(row)}>
-                                        <PlusSquare size={14} /> Add Questions
-                                    </button>
-
-                                    <button className="jd-button jd-send-client" onClick={() => sendToClient(row)}>
-                                        <Send size={18} style={{ marginRight: "6px" }} />
-                                        Send to Client
                                     </button>
                                 </td>
                             </tr>
@@ -319,162 +130,66 @@ const JDHistory = () => {
                     </tbody>
                 </table>
             ) : (
-                <p className="jd-loading">Loading…</p>
+                <p>Loading...</p>
             )}
-            {/* LOADING POPUP FOR MATCHER */}
+
+
+            {/* LOADING popup */}
             {matcherLoading && (
                 <div className="jd-modal-overlay">
                     <div className="jd-modal">
-                        <h3>🔍 Matching candidates...</h3>
-                        <p>Please wait...</p>
+                        <h3>🔍 Matching profiles...</h3>
                         <div className="spinner"></div>
                     </div>
                 </div>
             )}
 
+
             {/* MATCHER POPUP */}
             {matcherJD && (
                 <div className="jd-modal-overlay">
-                    <div className="jd-modal matcher-modal">
+                    <div className="jd-modal large-modal">
                         <button className="jd-modal-close" onClick={() => setMatcherJD(null)}>✖</button>
 
-                        <h2 className="jd-modal-title">🤝 Matches for: {matcherJD.designation}</h2>
-                        <p className="jd-modal-skills">Required Skills: <b>{matcherJD.skills}</b></p>
+                        <h2>🤝 Matched Profiles</h2>
+                        <p><strong>JD:</strong> {matcherJD.designation}</p>
 
-                        <div className="matcher-content">
-                            {matcherJD.matches && matcherJD.matches.length > 0 ? (
-                                <ProfileTable data={matcherJD.matches} index={9999} jdId={matcherJD.id} />
-                            ) : (
-                                <p className="no-matches-text">❌ No matching profiles found.</p>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
+                        {matcherJD.matches.length > 0 ? (
+                            <table className="profile-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Skills</th>
+                                        <th>Score</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
 
-            {/* VIEW JD POPUP */}
-            {selected && !showEditJD && (
-                <div className="jd-modal-overlay">
-                    <div className="jd-modal">
-                        <button className="jd-modal-close" onClick={() => setSelected(null)}>✖</button>
-
-                        <h2 className="jd-modal-title">{selected.designation}</h2>
-                        <p className="jd-modal-skills">Skills: {selected.skills}</p>
-
-                        <div className="jd-modal-text">{selected.jd_text}</div>
-
-                        {/* Generate AI Questions */}
-                        <div style={{ marginTop: 12 }}>
-                            <button className="jd-button jd-ai-generate" onClick={generateAIQuestions}>
-                                🤖 Generate AI Questions
-                            </button>
-                        </div>
-
-                        {/* AI Questions (persisted) */}
-                        {selected.aiQuestions && selected.aiQuestions.length > 0 && (
-                            <div className="ai-questions-box" style={{ marginTop: 12 }}>
-                                <h3>🤖 AI Interview Questions</h3>
-                                <table className="ai-questions-table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Question</th>
+                                <tbody>
+                                    {matcherJD.matches.map((profile) => (
+                                        <tr key={profile.id}>
+                                            <td>{profile.name}</td>
+                                            <td>{profile.skills}</td>
+                                            <td>{profile.score}%</td>
+                                            <td>
+                                                <button
+                                                    className="delete-btn"
+                                                    onClick={() => deleteProfileFromMatch(profile.id)}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {selected.aiQuestions.map((q, i) => (
-                                            <tr key={i}>
-                                                <td>{i + 1}</td>
-                                                <td>{q}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-
-                        {/* Manual Questions */}
-                        {selected.manualQuestions && selected.manualQuestions.length > 0 && (
-                            <div className="view-questions-list" style={{ marginTop: 12 }}>
-                                <h3>📝 Manual Questions</h3>
-                                <ol>
-                                    {selected.manualQuestions.map((q, i) => (
-                                        <li key={i} style={{ marginBottom: 6 }}>{q}</li>
                                     ))}
-                                </ol>
-                            </div>
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No profiles found.</p>
                         )}
-
-                        <div style={{ marginTop: 14 }}>
-                            <button className="jd-button jd-edit" onClick={openEditJD}>
-                                <Edit size={14} /> Edit JD
-                            </button>
-
-                            <button className="jd-copy-button" onClick={() => copyJD(selected.jd_text)} style={{ marginLeft: 8 }}>
-                                <Copy size={16} /> {copySuccess ? "Copied!" : "Copy JD"}
-                            </button>
-                        </div>
                     </div>
                 </div>
             )}
 
-            {/* EDIT JD POPUP */}
-            {showEditJD && (
-                <div className="jd-modal-overlay">
-                    <div className="jd-modal large-modal">
-                        <button className="jd-modal-close" onClick={() => setShowEditJD(false)}>✖</button>
-
-                        <h2 className="jd-modal-title">✏️ Edit Job Description</h2>
-
-                        <label>Designation</label>
-                        <input type="text" value={editData.designation} onChange={(e) => setEditData({ ...editData, designation: e.target.value })} className="edit-input" />
-
-                        <label>Skills</label>
-                        <input type="text" value={editData.skills} onChange={(e) => setEditData({ ...editData, skills: e.target.value })} className="edit-input" />
-
-                        <label>JD Text</label>
-                        <textarea value={editData.jd_text} onChange={(e) => setEditData({ ...editData, jd_text: e.target.value })} className="edit-textarea" />
-
-                        <button className="jd-button jd-save" onClick={saveEditedJD}>💾 Save JD</button>
-                    </div>
-                </div>
-            )}
-
-            {/* ADD QUESTIONS POPUP */}
-            {showAddQuestions && currentJD && (
-                <div className="jd-modal-overlay">
-                    <div className="jd-modal">
-                        <button className="jd-modal-close" onClick={() => setShowAddQuestions(false)}>✖</button>
-
-                        <h2 className="jd-modal-title">Add Questions for: {currentJD.designation}</h2>
-
-                        <div className="questions-container">
-                            {questions.map((q, idx) => (
-                                <input
-                                    key={idx}
-                                    type="text"
-                                    placeholder={`Question ${idx + 1}`}
-                                    value={q}
-                                    onChange={(e) => {
-                                        const newQs = [...questions];
-                                        newQs[idx] = e.target.value;
-                                        setQuestions(newQs);
-                                    }}
-                                    className="question-input"
-                                />
-                            ))}
-
-                            <button className="jd-button jd-add-questions" onClick={() => setQuestions([...questions, ""])}>
-                                + Add More
-                            </button>
-                        </div>
-
-                        <div style={{ marginTop: 12 }}>
-                            <button className="jd-button jd-save" onClick={saveQuestions}>💾 Save Questions</button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

@@ -1,154 +1,343 @@
-/* ============================
-   GLOBAL ANIMATIONS
-============================ */
+/* =====================================
+   INSTRUCTIONS PROMPT - Interview Setup
+   ===================================== */
 
-/* Fade-in for entire page */
-@keyframes fadeInPage {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Card slide + fade */
-@keyframes slideInCard {
-  0% { opacity: 0; transform: translateY(20px); }
- 100% { opacity: 1; transform: translateY(0); }
-}
-
-/* Checkbox scale animation */
-@keyframes checkboxPop {
-  0% { transform: scale(0.85); }
-  100% { transform: scale(1); }
-}
-
-/* ============================
-   PAGE WRAPPER
-============================ */
 .instructions-wrapper {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  
-  min-height: 100vh;
-  background: linear-gradient(to bottom, #ffffff, #f0f9ff);
-  animation: fadeInPage 0.7s ease-out;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%);
+  padding-bottom: 2rem;
 }
 
-/* ============================
-   NAVBAR CONTAINER
-============================ */
+/* ========== NAVBAR ========== */
 .instructions-navbar {
   width: 100%;
-  padding: 12px 24px;
+  height: 70px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-bottom: 3px solid #38bdf8;
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
   display: flex;
-  justify-content: flex-start;
   align-items: center;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #e0f2fe;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-/* ============================
-   CARD (Premium UI)
-============================ */
+.navbar-logo {
+  height: 45px;
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+/* ========== CARD CONTAINER ========== */
 .instructions-card {
-  width: 100%;
-  max-width: 620px;
-  padding: 10px;
-  border: 2px solid #38bdf8;
-  border-radius: 18px;
+  max-width: 700px;
+  margin: 3rem auto 0;
+  padding: 0;
   background: #ffffff;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
-  animation: slideInCard 0.6s ease-out;
+  border-radius: 20px;
+  border: 3px solid #38bdf8;
+  box-shadow: 
+    0 12px 32px rgba(56, 189, 248, 0.2),
+    0 6px 16px rgba(0, 0, 0, 0.08);
+  animation: slideUp 0.5s ease;
+  overflow: hidden;
 }
 
-/* ============================
-   HEADER TITLE
-============================ */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== CARD HEADER ========== */
 .instructions-header {
-  text-align: center;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  padding: 2rem;
+  border-bottom: 3px solid #38bdf8;
 }
 
 .instructions-title {
-  font-size: 26px;
+  margin: 0;
+  font-size: 2rem;
   font-weight: 700;
-  color: #0c4a6e;
-  margin-bottom: 8px;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* ============================
-   TEXT + LIST
-============================ */
-.instructions-list {
-  margin-top: 12px;
-  margin-left: 18px;
+/* ========== CARD CONTENT ========== */
+.instructions-card > div:nth-child(2) {
+  padding: 2rem;
+}
+
+.instructions-card p {
+  font-size: 1.05rem;
   color: #334155;
+  margin-bottom: 1.5rem;
   line-height: 1.6;
+  font-weight: 500;
+}
+
+/* ========== INSTRUCTIONS LIST ========== */
+.instructions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
 }
 
 .instructions-list li {
-  margin-bottom: 10px;
-  font-size: 15px;
-  color: #334155;
-  opacity: 0;
-  animation: fadeInListItems 0.6s forwards ease;
+  position: relative;
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0ea5e9;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #1e293b;
+  line-height: 1.6;
+  transition: all 0.25s ease;
 }
 
-/* Staggered fade effect for bullets */
-.instructions-list li:nth-child(1) { animation-delay: 0.1s; }
-.instructions-list li:nth-child(2) { animation-delay: 0.2s; }
-.instructions-list li:nth-child(3) { animation-delay: 0.3s; }
-.instructions-list li:nth-child(4) { animation-delay: 0.4s; }
-.instructions-list li:nth-child(5) { animation-delay: 0.5s; }
-
-@keyframes fadeInListItems {
-  from { opacity: 0; transform: translateX(-6px); }
-  to { opacity: 1; transform: translateX(0); }
+.instructions-list li:hover {
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
 }
 
-/* ============================
-   CHECKBOX + LABEL
-============================ */
+.instructions-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(14, 165, 233, 0.3);
+}
+
+/* ========== CHECKBOX SECTION ========== */
 .confirm-checkbox {
   display: flex;
   align-items: center;
-  margin-top: 14px;
-  animation: checkboxPop 0.4s ease;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #fbbf24;
+  border-radius: 12px;
+  margin-top: 1.5rem;
+  transition: all 0.25s ease;
+}
+
+.confirm-checkbox:hover {
+  background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
 }
 
 .confirm-checkbox label {
-  margin-left: 8px;
-  font-size: 14px;
-  color: #0f172a;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #78350f;
+  cursor: pointer;
+  user-select: none;
+  flex: 1;
 }
 
-.confirm-checkbox:hover label {
-  color: #0369a1;
+/* Checkbox styling */
+.confirm-checkbox button[role="checkbox"] {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #f59e0b;
+  border-radius: 6px;
+  background: #ffffff;
+  transition: all 0.25s ease;
 }
 
-/* ============================
-   START BUTTON STYLING
-============================ */
-button {
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+.confirm-checkbox button[role="checkbox"][data-state="checked"] {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-color: #d97706;
 }
 
-button:hover:not(:disabled) {
+/* ========== CARD FOOTER ========== */
+.instructions-card > div:last-child {
+  padding: 1.5rem 2rem;
+  background: #f8fafc;
+  border-top: 2px solid #e2e8f0;
+  display: flex;
+  justify-content: center;
+}
+
+/* ========== START BUTTON ========== */
+.instructions-card button {
+  padding: 0.85rem 2.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.instructions-card button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
   transform: translateY(-2px);
-  box-shadow: 0px 6px 14px rgba(56, 189, 248, 0.35);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
 }
 
-button:disabled {
-  background-color: #bae6fd !important;
+.instructions-card button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.instructions-card button:disabled {
+  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
   cursor: not-allowed;
-  transform: none;
+  opacity: 0.6;
   box-shadow: none;
 }
 
-/* ============================
-   DEBUG TEXT
-============================ */
-.instructions-debug {
-  margin-top: 20px;
-  opacity: 0.65;
-  font-size: 12px;
-  color: #475569;
+/* ========== DEBUG INFO ========== */
+.instructions-wrapper > div:last-child {
+  max-width: 700px;
+  margin: 1rem auto 0;
+  padding: 0.75rem 1rem;
+  background: #fef3c7;
+  border: 2px solid #fbbf24;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-family: monospace;
+  color: #78350f;
+  text-align: center;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+  .instructions-navbar {
+    height: 60px;
+    padding: 0 1rem;
+  }
+
+  .navbar-logo {
+    height: 38px;
+  }
+
+  .instructions-card {
+    margin: 2rem 1rem 0;
+    max-width: calc(100% - 2rem);
+  }
+
+  .instructions-header {
+    padding: 1.5rem;
+  }
+
+  .instructions-title {
+    font-size: 1.5rem;
+  }
+
+  .instructions-card > div:nth-child(2) {
+    padding: 1.5rem;
+  }
+
+  .instructions-list li {
+    font-size: 0.9rem;
+    padding: 0.65rem 0.65rem 0.65rem 2.25rem;
+  }
+
+  .instructions-list li::before {
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+    left: 0.65rem;
+  }
+
+  .instructions-card button {
+    width: 100%;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .instructions-wrapper {
+    padding-bottom: 1rem;
+  }
+
+  .instructions-card {
+    margin: 1.5rem 0.75rem 0;
+    max-width: calc(100% - 1.5rem);
+  }
+
+  .instructions-header {
+    padding: 1.25rem;
+  }
+
+  .instructions-title {
+    font-size: 1.35rem;
+  }
+
+  .instructions-card > div:nth-child(2) {
+    padding: 1.25rem;
+  }
+
+  .instructions-card p {
+    font-size: 0.95rem;
+  }
+
+  .instructions-list li {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.6rem 0.6rem 2rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .confirm-checkbox {
+    padding: 0.85rem;
+    gap: 0.6rem;
+  }
+
+  .confirm-checkbox label {
+    font-size: 0.88rem;
+  }
+
+  .instructions-card > div:last-child {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+/* ========== PRINT STYLES ========== */
+@media print {
+  .instructions-navbar {
+    box-shadow: none;
+  }
+
+  .instructions-card button {
+    display: none;
+  }
+
+  .instructions-wrapper > div:last-child {
+    display: none;
+  }
 }

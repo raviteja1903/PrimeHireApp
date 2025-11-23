@@ -10,7 +10,7 @@
 
 .chat-messages {
   flex: 1;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   margin-bottom: 8px;
 }
 
@@ -39,8 +39,7 @@
   }
 }
 
-/* 🌟 Modern Quick Prompts Grid */
-/* ⚡ Modern One-Row-Per-Feature Layout */
+ 
 .quick-prompts-bar {
   display: flex;
   flex-direction: column;

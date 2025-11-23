@@ -355,9 +355,12 @@ export default function InstructionsPrompt() {
           <p>Please read and accept the instructions before continuing.</p>
           <ul className="instructions-list">
             <li>Interview will be recorded (video + audio + responses).</li>
+            <li>During the interview, you can change the job position without ending the interview</li>
+            <li>Your system keeps complete records of the candidate’s interview — from scheduling to completion — so HR can monitor everything easily</li>
             <li>Your data will be used for evaluation purposes.</li>
             <li>Do not share personal or sensitive information.</li>
             <li>Give honest answers without external help.</li>
+            <li>Arrive 10-15 min's early;5 min for online interview</li>
             <li>Ensure camera, mic, and internet are working properly.</li>
           </ul>
 

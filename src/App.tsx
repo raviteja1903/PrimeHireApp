@@ -11,6 +11,7 @@ import InstructionsPrompt from "./InterviewBot/InstructionsPrompt"
 import CandidateOverview from "./CandidateStatus/CandidateOverview";
 import CandidateStatus from "./CandidateStatus/CandidateStatus"
 import ValidationPanel from "./InterviewBot/ValidationPanel"
+import Scheduler from "@/components/Scheduler";
  
  
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
            <Route path="/candidate-status/:id" element={<CandidateStatus />} /> 
            <Route path="/validation_panel" element={<ValidationPanel />} />
           <Route path="/candidate/:id" element={<CandidateOverview />} /> 
+          <Route path="/scheduler" element={<Scheduler />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
