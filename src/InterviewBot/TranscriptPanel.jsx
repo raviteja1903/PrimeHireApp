@@ -889,26 +889,39 @@ export default function TranscriptPanel({ candidateName = "Anonymous", candidate
   }
 
   return (
-    <div className="transcript-panel" style={{ padding: 8 }}>
+    <div className="transcript-panel">
       <h3>Transcript</h3>
-      <div style={{ display: "flex", gap: 8 }}>
-        <Button onClick={generateQuestion} disabled={recording || interviewCompleted}>Start / Next Question</Button>
+      
+      <div className="transcript-actions">
+        <button onClick={generateQuestion} disabled={recording || interviewCompleted}>
+          Start / Next Question
+        </button>
         {!recording ? (
-          <Button onClick={startRecording} disabled={interviewCompleted}>Record</Button>
+          <button onClick={startRecording} disabled={interviewCompleted}>
+            Record
+          </button>
         ) : (
-          <Button onClick={stopAndSend}>Stop & Send</Button>
+          <button onClick={stopAndSend} className="recording">
+            Stop & Send
+          </button>
         )}
       </div>
 
-      <div style={{ marginTop: 12, maxHeight: 420, overflow: "auto", padding: 8, border: "1px solid #eee" }}>
-        {transcript.length === 0 ? <div>No conversation yet.</div> : transcript.map((m, i) => (
-          <div key={i} style={{ marginBottom: 8 }}>
-            <strong>{m.sender === "ai" ? "AI" : "You"}:</strong> {m.text}
-          </div>
-        ))}
+      <div className="transcript-messages">
+        {transcript.length === 0 ? (
+          <div className="transcript-empty">No conversation yet.</div>
+        ) : (
+          transcript.map((m, i) => (
+            <div key={i} className={`transcript-message-row ${m.sender === "ai" ? "ai-row" : "user-row"}`}>
+              <div className="transcript-message">
+                <div className="message-header">{m.sender === "ai" ? "AI" : "You"}</div>
+                {m.text}
+              </div>
+            </div>
+          ))
+        )}
         <div ref={transcriptEndRef} />
       </div>
     </div>
   );
 }
-// 

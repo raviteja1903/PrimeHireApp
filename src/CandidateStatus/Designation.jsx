@@ -23,7 +23,7 @@ const Designation = () => {
                     key={item.id}
                     className="designation-card"
                 >
-                    <div className="card-content">
+                    <div className="card-contentOne">
                         <h3 className="jd-title">{item.title}</h3>
                     </div>
 

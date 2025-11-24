@@ -343,6 +343,7 @@
 //     </div>
 //   );
 // }
+
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import TranscriptPanel from "../InterviewBot/TranscriptPanel";

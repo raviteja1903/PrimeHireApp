@@ -1,33 +1,37 @@
-/* =====================================
-   INSTRUCTIONS PROMPT - Interview Setup
-   ===================================== */
+/* =============================
+   GLOBAL & WRAPPER
+============================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 .instructions-wrapper {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%);
-  padding-bottom: 2rem;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8edf3 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
 }
 
-/* ========== NAVBAR ========== */
+/* =============================
+   NAVBAR
+============================= */
 .instructions-navbar {
-  width: 100%;
-  height: 70px;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border-bottom: 3px solid #38bdf8;
-  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
-  display: flex;
-  align-items: center;
-  padding: 0 2rem;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+     width: 100%;
+     
+    padding: 15px 6px;
+    margin-bottom: 40px;
 }
 
 .navbar-logo {
-  height: 45px;
+  height: 41px;
   width: auto;
+  display: block;
+  margin-top: -30px;
   transition: transform 0.3s ease;
 }
 
@@ -35,22 +39,21 @@
   transform: scale(1.05);
 }
 
-/* ========== CARD CONTAINER ========== */
+/* =============================
+   CARD
+============================= */
 .instructions-card {
-  max-width: 700px;
-  margin: 3rem auto 0;
-  padding: 0;
-  background: #ffffff;
+  width: 100%;
+  max-width: 750px;
+  background: white;
   border-radius: 20px;
-  border: 3px solid #38bdf8;
-  box-shadow: 
-    0 12px 32px rgba(56, 189, 248, 0.2),
-    0 6px 16px rgba(0, 0, 0, 0.08);
-  animation: slideUp 0.5s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  animation: fadeInUp 0.6s ease;
+  border: none !important;
 }
 
-@keyframes slideUp {
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -61,283 +64,402 @@
   }
 }
 
-/* ========== CARD HEADER ========== */
+/* =============================
+   HEADER
+============================= */
 .instructions-header {
-  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-  padding: 2rem;
-  border-bottom: 3px solid #38bdf8;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 40px 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.instructions-header::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  animation: pulse 15s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
 }
 
 .instructions-title {
-  margin: 0;
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: 700;
-  color: #ffffff;
-  text-align: center;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin: 0;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ========== CARD CONTENT ========== */
-.instructions-card > div:nth-child(2) {
-  padding: 2rem;
+/* =============================
+   CARD CONTENT
+============================= */
+.card-content {
+  padding: 45px 35px;
 }
 
 .instructions-card p {
-  font-size: 1.05rem;
-  color: #334155;
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
+  font-size: 17px;
+  color: #4a5568;
+  margin-bottom: 25px;
   font-weight: 500;
+  line-height: 1.6;
 }
 
-/* ========== INSTRUCTIONS LIST ========== */
+/* =============================
+   INSTRUCTIONS LIST
+============================= */
 .instructions-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 35px 0;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
 }
 
 .instructions-list li {
+  font-size: 15px;
+  color: #2d3748;
+  padding: 15px 0;
+  padding-left: 35px;
   position: relative;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-  margin-bottom: 0.75rem;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border-left: 4px solid #0ea5e9;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  color: #1e293b;
-  line-height: 1.6;
-  transition: all 0.25s ease;
+  line-height: 1.7;
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.instructions-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .instructions-list li:hover {
-  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-  transform: translateX(5px);
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+  padding-left: 40px;
+  color: #667eea;
 }
 
 .instructions-list li::before {
   content: "✓";
   position: absolute;
-  left: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  background: linear-gradient(135deg, #0ea5e9, #0284c7);
-  color: #ffffff;
+  left: 0;
+  top: 15px;
+  color: #667eea;
+  font-weight: bold;
+  font-size: 20px;
+  width: 26px;
+  height: 26px;
+  background: #eef2ff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 0.85rem;
-  box-shadow: 0 2px 6px rgba(14, 165, 233, 0.3);
+  transition: all 0.3s ease;
 }
 
-/* ========== CHECKBOX SECTION ========== */
+.instructions-list li:hover::before {
+  background: #667eea;
+  color: white;
+  transform: scale(1.1);
+}
+
+/* =============================
+   CHECKBOX SECTION
+============================= */
 .confirm-checkbox {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 2px solid #fbbf24;
-  border-radius: 12px;
-  margin-top: 1.5rem;
-  transition: all 0.25s ease;
+  gap: 14px;
+  padding: 22px;
+  margin-top: 25px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #eef2ff 100%);
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .confirm-checkbox:hover {
-  background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
-  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+  border-color: #667eea;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
 }
 
-.confirm-checkbox label {
-  font-size: 0.95rem;
+/* Shadcn Checkbox Styling */
+.confirm-checkbox > button {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 6px !important;
+  border: 2.5px solid #667eea !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: white !important;
+  flex-shrink: 0 !important;
+  transition: all 0.3s ease !important;
+}
+
+.confirm-checkbox > button:hover {
+  border-color: #764ba2 !important;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.confirm-checkbox > button[data-state="checked"] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border-color: #667eea !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.confirm-checkbox svg {
+  width: 15px !important;
+  height: 15px !important;
+  color: white !important;
+  stroke-width: 3.5 !important;
+}
+
+.checkbox-label {
+  font-size: 16px;
   font-weight: 600;
-  color: #78350f;
+  color: #2d3748;
   cursor: pointer;
   user-select: none;
-  flex: 1;
+  transition: color 0.3s ease;
 }
 
-/* Checkbox styling */
-.confirm-checkbox button[role="checkbox"] {
-  width: 22px;
-  height: 22px;
-  border: 2px solid #f59e0b;
-  border-radius: 6px;
-  background: #ffffff;
-  transition: all 0.25s ease;
+.confirm-checkbox:hover .checkbox-label {
+  color: #667eea;
 }
 
-.confirm-checkbox button[role="checkbox"][data-state="checked"] {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  border-color: #d97706;
-}
-
-/* ========== CARD FOOTER ========== */
-.instructions-card > div:last-child {
-  padding: 1.5rem 2rem;
-  background: #f8fafc;
-  border-top: 2px solid #e2e8f0;
+/* =============================
+   CARD FOOTER
+============================= */
+.card-footer {
+  padding: 35px;
+  background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+  border-top: 2px solid #e9ecef;
   display: flex;
   justify-content: center;
 }
 
-/* ========== START BUTTON ========== */
-.instructions-card button {
-  padding: 0.85rem 2.5rem;
-  font-size: 1.05rem;
+/* =============================
+   START BUTTON
+============================= */
+.start-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  padding: 16px 50px;
+  font-size: 17px;
   font-weight: 700;
-  color: #ffffff;
-  background: linear-gradient(135deg, #0ea5e9, #0284c7);
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.3);
-  text-transform: uppercase;
   letter-spacing: 0.5px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
 }
 
-.instructions-card button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #0284c7, #0369a1);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+.start-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
 }
 
-.instructions-card button:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+.start-btn:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
-.instructions-card button:disabled {
-  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
-  cursor: not-allowed;
+.start-btn:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+}
+
+.start-btn:active:not(:disabled) {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.start-btn:disabled {
+  background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
   opacity: 0.6;
-  box-shadow: none;
+  transform: none !important;
 }
 
-/* ========== DEBUG INFO ========== */
+/* =============================
+   DEBUG INFO
+============================= */
 .instructions-wrapper > div:last-child {
-  max-width: 700px;
-  margin: 1rem auto 0;
-  padding: 0.75rem 1rem;
-  background: #fef3c7;
-  border: 2px solid #fbbf24;
-  border-radius: 10px;
-  font-size: 0.85rem;
-  font-family: monospace;
-  color: #78350f;
-  text-align: center;
+  margin-top: 25px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #718096;
+  font-family: 'Courier New', monospace;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
+/* =============================
+   RESPONSIVE DESIGN
+============================= */
 @media (max-width: 768px) {
+  .instructions-wrapper {
+    padding: 15px;
+  }
+
   .instructions-navbar {
-    height: 60px;
-    padding: 0 1rem;
+    margin-bottom: 30px;
+    padding: 12px 15px;
   }
 
   .navbar-logo {
     height: 38px;
   }
 
-  .instructions-card {
-    margin: 2rem 1rem 0;
-    max-width: calc(100% - 2rem);
-  }
-
   .instructions-header {
-    padding: 1.5rem;
+    padding: 30px 25px;
   }
 
   .instructions-title {
-    font-size: 1.5rem;
+    font-size: 26px;
   }
 
-  .instructions-card > div:nth-child(2) {
-    padding: 1.5rem;
+  .card-content {
+    padding: 35px 25px;
+  }
+
+  .instructions-card p {
+    font-size: 16px;
+  }
+
+  .instructions-list {
+    padding: 15px;
   }
 
   .instructions-list li {
-    font-size: 0.9rem;
-    padding: 0.65rem 0.65rem 0.65rem 2.25rem;
+    font-size: 14px;
+    padding-left: 32px;
   }
 
-  .instructions-list li::before {
-    width: 20px;
-    height: 20px;
-    font-size: 0.75rem;
-    left: 0.65rem;
+  .card-footer {
+    padding: 28px;
   }
 
-  .instructions-card button {
-    width: 100%;
-    padding: 0.75rem 2rem;
-    font-size: 1rem;
+  .start-btn {
+    padding: 14px 40px;
+    font-size: 16px;
   }
 }
 
 @media (max-width: 480px) {
   .instructions-wrapper {
-    padding-bottom: 1rem;
+    padding: 10px;
   }
 
-  .instructions-card {
-    margin: 1.5rem 0.75rem 0;
-    max-width: calc(100% - 1.5rem);
+  .instructions-navbar {
+    margin-bottom: 20px;
+    padding: 10px;
+  }
+
+  .navbar-logo {
+    height: 35px;
   }
 
   .instructions-header {
-    padding: 1.25rem;
+    padding: 25px 20px;
   }
 
   .instructions-title {
-    font-size: 1.35rem;
+    font-size: 22px;
   }
 
-  .instructions-card > div:nth-child(2) {
-    padding: 1.25rem;
+  .card-content {
+    padding: 28px 20px;
   }
 
   .instructions-card p {
-    font-size: 0.95rem;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+
+  .instructions-list {
+    padding: 12px;
+    margin-bottom: 25px;
   }
 
   .instructions-list li {
-    font-size: 0.85rem;
-    padding: 0.6rem 0.6rem 0.6rem 2rem;
-    margin-bottom: 0.6rem;
+    font-size: 13px;
+    padding: 12px 0 12px 30px;
+  }
+
+  .instructions-list li::before {
+    font-size: 16px;
+    width: 22px;
+    height: 22px;
   }
 
   .confirm-checkbox {
-    padding: 0.85rem;
-    gap: 0.6rem;
+    padding: 18px;
+    gap: 12px;
   }
 
-  .confirm-checkbox label {
-    font-size: 0.88rem;
+  .checkbox-label {
+    font-size: 14px;
   }
 
-  .instructions-card > div:last-child {
-    padding: 1.25rem 1.5rem;
-  }
-}
-
-/* ========== PRINT STYLES ========== */
-@media print {
-  .instructions-navbar {
-    box-shadow: none;
+  .card-footer {
+    padding: 22px 15px;
   }
 
-  .instructions-card button {
-    display: none;
+  .start-btn {
+    padding: 13px 35px;
+    font-size: 15px;
+    width: 100%;
   }
 
   .instructions-wrapper > div:last-child {
-    display: none;
+    font-size: 11px;
+    padding: 10px 15px;
+  }
+}
+
+/* =============================
+   ACCESSIBILITY
+============================= */
+.start-btn:focus-visible,
+.confirm-checkbox > button:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
